@@ -13,6 +13,7 @@ typedef int ElemType; //数据元素类型定义
 #define LISTINCREMENT 10 //线性表扩容容量
 #define MAX_LIST_NUM 10 //线性表数量最大值
 #define MAX_NAME_LENGTH 30 //每个线性表名称长度最大值
+// #define FileName "data.txt"//文件名
 /*线性表（顺序结构）的定义*/
 typedef struct{ 
     ElemType * elem;
@@ -27,7 +28,8 @@ typedef struct{
      int length; //当前线性表数量
 }LISTS;
 LISTS Lists; //线性表集合Lists
-
+int current=0; //当前线性表在Lists中的位置
+char FileName[MAX_NAME_LENGTH];
 
 /*函数声明*/
 void printMenu();
@@ -50,6 +52,8 @@ void ShowAllList(LISTS Lists);
 SqList* ChangeList(char ListName[],int * current);
 status RemoveList(LISTS *Lists,char ListName[],int *p);
 status SaveData(LISTS Lists);
+status LoadData(LISTS *LL);
+status SaveData(LISTS Lists);
 
 /*打印菜单*/
 void printMenu()
@@ -64,7 +68,7 @@ void printMenu()
     printf("|      11. Delete Element         12. Show Current List       |\n");
     printf("|      13. Show All Lists         14. Change Current List     |\n");
     printf("|      15. Remove a List          16. Init a List             |\n");
-    printf("|      17. Save All Data          18. Load Data               |\n");
+    printf("|      17. Save All Data          18. Load All Data           |\n");
     printf("|                         0.EXIT                              |\n");
     printf("|                                                             |\n");
     printf("|-------------------------------------------------------------|\n");
@@ -107,7 +111,6 @@ int main()
 	printMenu();
 	clearAllList(Lists);
 	SqList *L=NULL;
-    int current=0;
     Lists.length=0;
 	int op=1;
 	while(op){
@@ -185,7 +188,7 @@ int main()
 			break;
 		case 6:
 			if(checkList(L)){
-			printf("Please enter the position (between 1 to %d) you want to query:", ListLength(*L)); 
+			printf("Please enter the position (between 1 to %d) you want to query:\n", ListLength(*L)); 
 			int queryPosition;
 			scanf("%d",&queryPosition);
 			ElemType queryResult;
@@ -239,10 +242,10 @@ int main()
 		case 11:
 			if(checkList(L)){
 			printf("Position: (between 1 to %d)\n", ListLength(*L));
-            printf("Please enter the position and the element you want to delete:(spaced by space)\n");  
+            printf("Please enter the position you want to delete:\n");  
 			int deletePosition;
 			ElemType deleteElem;
-			scanf("%d %d",&deletePosition,&deleteElem);
+			scanf("%d",&deletePosition);
 			if(ListDelete(L,deletePosition,&deleteElem)==OK) printf("Delete %d in position %d.\n", deleteElem, deletePosition);
 			else if(ListDelete(L,deletePosition,&deleteElem)==ERROR) printf("The position is illegal.\n");
 			}
@@ -276,6 +279,7 @@ int main()
             {
                 printf("Successfully removed.\n");
                 if(p==current) L=NULL;
+                else if(p<current) current-=1;
             }
             else printf("There is no linear table named %s.\n",temp_remove);
             getchar();
@@ -296,7 +300,24 @@ int main()
             break;
         case 17:
             SaveData(Lists);
-            printf("Successfully Saved\n");
+            printf("Successfully Saved.\n");
+            getchar();
+            break;
+        case 18:
+            printf("Are you sure you want to read from the file?\n");
+            printf("The data that is not currently saved will be gone.\n");
+            printf("confirm:1  cancel:0\n");
+            int choice;
+            scanf("%d",&choice);
+            if(choice){
+                if(LoadData(&Lists)==OK)
+                // LoadData();
+                    {
+                        L=NULL;
+                        printf("Successfully Loaded.\n");
+                        printf("Now you can enter 13 to query all linear tables in the file.");
+                    }
+                }
             getchar();
             break;
         case 0:
@@ -539,16 +560,15 @@ status RemoveList(LISTS *Lists,char ListName[],int *p)
 status SaveData(LISTS Lists)
 {
     printf("Please enter the filename:\n");
-    char FileName[MAX_NAME_LENGTH];
     scanf("%s",FileName);
-    FILE * fp = fopen(FileName, "w");
+    FILE * fp = fopen(FileName, "w");//覆盖写入
     //尝试打开，如果文件不存在，则创建文件
     if (fp == NULL)
         fp = fopen(FileName, "wb");
     int literate_time = 0;
     for (; literate_time < MAX_LIST_NUM; literate_time++)
     {
-        if (Lists.elem[literate_time].L && Lists.elem[literate_time].L->length)
+        if (Lists.elem[literate_time].L )//&& Lists.elem[literate_time].L->length
         {   //按照一定格式将数据保存到文件中
             fprintf(fp, "name:%s length:%d\n", Lists.elem[literate_time].name, Lists.elem[literate_time].L->length);
             for(int i=0; i < Lists.elem[literate_time].L->length; i++)
@@ -559,3 +579,47 @@ status SaveData(LISTS Lists)
     fclose(fp);
     return OK;
 }
+
+status LoadData(LISTS *LL)
+//还有一种读取方法为仅显示，但当前Lists并不会更新为文件中内容。
+//Lists只是暂存的，如果没有Save就去Load，当前暂存的Lists会被文件内容覆盖。
+{   //尝试打开文件
+    printf("Please enter the filename:\n");
+    scanf("%s",FileName);
+    FILE * fp = fopen(FileName, "r");
+    if (fp == NULL)
+    {   //如果文件不存在
+        printf("File doesn't exist\n");
+        return ERROR;
+    }
+    int literate_time = 0;
+    char current_list_name[MAX_NAME_LENGTH];
+    ElemType current_elem;
+    int list_length;
+    LL->length=0;
+    //不断读取直到文件尾，即EOF
+    while(literate_time < MAX_LIST_NUM && fscanf(fp, "name:%s length:%d\n", current_list_name, &list_length) != EOF)
+    {   //打印log
+        // printf("current_list_name = %s, list_length = %d\n", current_list_name, list_length);
+        printf("Reading a linear table with the name %s.\n", current_list_name);
+        
+        //free(ListTracker[current_list_num]);
+        LL->elem[literate_time].L = (SqList *)malloc(sizeof(SqList));
+        strcpy(LL->elem[literate_time].name,current_list_name);
+        LL->elem[literate_time].L->length = list_length;
+        LL->elem[literate_time].L->listsize = LIST_INIT_SIZE;
+        LL->elem[literate_time].L->elem = (ElemType *)malloc(sizeof(ElemType) * LIST_INIT_SIZE);
+        for (int i=0; i < list_length; i++)
+        {
+            fscanf(fp, "%d\n", &current_elem);
+            printf("element %d is being read.\n", i+1);
+            (LL->elem[literate_time].L->elem)[i] = current_elem;
+        }
+        literate_time++;
+        LL->length++;
+        fscanf(fp,"\n");
+    }
+    return OK;
+}
+
+
