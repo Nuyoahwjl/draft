@@ -28,6 +28,7 @@ typedef struct{
 }LISTS;
 LISTS Lists; //线性表集合Lists
 
+
 /*函数声明*/
 void printMenu();
 void clearAllList(LISTS Lists);
