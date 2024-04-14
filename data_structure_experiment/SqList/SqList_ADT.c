@@ -1,0 +1,560 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#define TRUE 1
+#define FALSE 0
+#define OK 1
+#define ERROR 0
+#define INFEASIBLE -1
+#define OVERFLOW -2
+typedef int status;
+typedef int ElemType; //数据元素类型定义
+#define LIST_INIT_SIZE 100 //线性表初始容量
+#define LISTINCREMENT 10 //线性表扩容容量
+#define MAX_LIST_NUM 10 //线性表数量最大值
+#define MAX_NAME_LENGTH 30 //每个线性表名称长度最大值
+/*线性表（顺序结构）的定义*/
+typedef struct{ 
+    ElemType * elem;
+    int length;
+    int listsize;
+}SqList;
+/*线性表的集合类型定义*/
+typedef struct{  
+     struct { char name[MAX_NAME_LENGTH];
+               SqList *L;    
+     } elem[MAX_LIST_NUM];
+     int length; //当前线性表数量
+}LISTS;
+LISTS Lists; //线性表集合Lists
+
+/*函数声明*/
+void printMenu();
+void clearAllList(LISTS Lists);
+status checkList(SqList *L);
+void visit(ElemType item);
+status InitList(SqList *L);
+status DestroyList(SqList *L);
+status ClearList(SqList *L);
+status ListEmpty(SqList L);
+int ListLength(SqList L);
+status GetElem(SqList L,int i,ElemType *e);
+int LocateElem(SqList L,ElemType e);
+status PriorElem(SqList L,ElemType e,ElemType *pre);
+status NextElem(SqList L,ElemType e,ElemType *next);
+status ListInsert(SqList *L,int i,ElemType e);
+status ListDelete(SqList *L,int i,ElemType *e);
+status ListTraverse(SqList L,void (* visit)(ElemType));
+void ShowAllList(LISTS Lists);
+SqList* ChangeList(char ListName[],int * current);
+status RemoveList(LISTS *Lists,char ListName[],int *p);
+status SaveData(LISTS Lists);
+
+/*打印菜单*/
+void printMenu()
+{
+    printf("|---------Menu for Linear Table On Sequence Structure---------|\n");
+    printf("|                                                             |\n");
+    printf("|      1.  Create a List          2.  Destroy Current List    |\n");
+    printf("|      3.  Clear current List     4.  Empty or Not            |\n");
+    printf("|      5.  Show List Length       6.  Get Element             |\n");
+    printf("|      7.  Locate Elem            8.  Get Prior Element       |\n");
+    printf("|      9.  Get Next Element       10. Insert Element          |\n");
+    printf("|      11. Delete Element         12. Show Current List       |\n");
+    printf("|      13. Show All List          14. Change Current List     |\n");
+    printf("|      15. Remove a List          16. Init a List             |\n");
+    printf("|      17. Save All Data          18. Load Data               |\n");
+    printf("|                         0.EXIT                              |\n");
+    printf("|                                                             |\n");
+    printf("|-------------------------------------------------------------|\n");
+    // printf("|-------Please Choose Your Operation from Options above-------|\n");
+    // printf("|-------------------------------------------------------------|\n\n");
+}
+
+/*Lists初始化*/
+void clearAllList(LISTS Lists)
+{
+    for (int i=0;i<MAX_LIST_NUM;i++)
+        Lists.elem[i].L=NULL;
+}
+
+/*检查当前线性表是否合法*/
+status checkList(SqList *L)
+{
+	if (!L)
+    {
+        printf("The linear table does not exist.\n");
+        return FALSE;
+    }
+    else if (!L->elem)
+    {
+        printf("You need to initialize first.\n");
+        return FALSE;
+    }
+    else
+        return TRUE;
+}
+
+/*用于遍历时输出*/
+void visit(ElemType item)
+{
+    printf("%d ", item);
+}
+/*主函数*/
+int main()
+{
+	printMenu();
+	clearAllList(Lists);
+	SqList *L=NULL;
+    int current=0;
+    Lists.length=0;
+	int op=1;
+	while(op){
+		printf("\n|-------------------------------------------------------------|\n");
+        printf(  "|-------Please Choose Your Operation from Options above-------|\n");
+        printf(  "|-------------------------------------------------------------|\n\n");
+		scanf("%d",&op);
+        // system("cls");
+        // printMenu();
+		switch(op){
+		case 1:
+			printf("|-------------------------------------------------------------|\n");
+            printf("|---------You can create a total of %d linear tables.---------|\n",MAX_LIST_NUM); //可创建线性表总数
+			if(Lists.length>1)
+                printf("|--------Currently, %d linear tables have been created.--------|\n",Lists.length); //当前创建线性表数量
+            else 
+                printf("|---------Currently, %d linear table has been created.---------|\n",Lists.length);
+            printf("|-------------------------------------------------------------|\n\n");
+			if(Lists.length<MAX_LIST_NUM){
+				printf("|-------------------------------------------------------------|\n");
+                printf("|--When you create a linear table, it is selected by default--|\n");
+                printf("|-------------------------------------------------------------|\n");
+				printf("\nPlease enter the name of the linear table you want to add : \n");
+				char s[MAX_NAME_LENGTH];
+				scanf("%s",s); //新增线性表名称
+                int flag=1;
+                for(int i=0;i<Lists.length;i++)
+                {
+                    if(strcmp(Lists.elem[i].name,s)==0)
+                    flag=0;
+                }
+				if(flag){
+                    Lists.elem[Lists.length].L=(SqList *)malloc(sizeof(SqList));
+                    strcpy(Lists.elem[Lists.length].name,s);
+                    L=Lists.elem[Lists.length].L;
+                    current=Lists.length;
+                    L->elem=NULL; //初始化为空
+                    Lists.length++; //线性表数量加一
+                    if(InitList(L)==OK) printf("The linear table (name: %s) is created!\n",s);
+                    else printf("Failed to create a linear table!\n");
+                }
+                else printf("The linear table already exists.\n");
+				getchar();
+				break;
+			}
+			else{
+				printf("Capacity is full!\n"); //容量已满
+				getchar();
+				break;
+			}
+		case 2:
+			if(checkList(L)){
+			if(DestroyList(L)==OK)  printf("The linear table was successfully destroyed.\n");
+			}
+			getchar();
+		break;
+		case 3:
+			if(checkList(L)){
+			if(ClearList(L)==OK) printf("The linear table was successfully cleared.\n"); 
+			}   
+			getchar();
+			break;
+		case 4:
+			if(checkList(L)){
+			if(ListEmpty(*L)==TRUE) printf("The linear table is empty.\n");
+			else if(ListEmpty(*L)==FALSE) printf("The linear table is not empty.\n");
+			}
+			getchar();
+			break;
+		case 5:
+			if(checkList(L)){
+			if(ListLength(*L)!=INFEASIBLE) printf("The length of the linear table is:%d\n",ListLength(*L));  
+			}
+			getchar();
+			break;
+		case 6:
+			if(checkList(L)){
+			printf("Please enter the position (between 1 to %d) you want to query:", ListLength(*L)); 
+			int queryPosition;
+			scanf("%d",&queryPosition);
+			ElemType queryResult;
+			if(GetElem(*L,queryPosition,&queryResult)==OK) printf("The element is %d.\n",queryResult);
+			else if(GetElem(*L,queryPosition,&queryResult)==ERROR) printf("The position is illegal.\n");
+			}
+			getchar();
+			break;
+		case 7:
+			if(checkList(L)){
+				printf("Please enter the element you want to locate.\n");
+				ElemType queryElem_locate;
+				scanf("%d",&queryElem_locate);
+				if(LocateElem(*L,queryElem_locate)!=ERROR) printf("The position of %d is %d.\n",queryElem_locate,LocateElem(*L,queryElem_locate));
+				else printf("The element does not exist.\n");
+			}
+			getchar();
+			break;
+		case 8:
+			if(checkList(L)){
+				printf("Please enter the element you want to query:\n");
+				ElemType queryElem_prior,pre;
+				scanf("%d",&queryElem_prior);
+				if(PriorElem(*L,queryElem_prior,&pre)==OK) printf("The prior element of %d is %d.\n",queryElem_prior,pre);
+				else if(PriorElem(*L,queryElem_prior,&pre)==ERROR) printf("failed to find.\n");
+			}
+			getchar();
+			break;
+		case 9:
+			if(checkList(L)){
+				printf("Please enter the element you want to query:\n");
+				ElemType queryElem_next,next;
+				scanf("%d",&queryElem_next);
+				if(NextElem(*L,queryElem_next,&next)==OK) printf("The next element of %d is %d.\n",queryElem_next,next);
+				else if(NextElem(*L,queryElem_next,&next)==ERROR) printf("failed to find.\n");
+			}    
+			getchar();
+			break;
+		case 10:
+			if(checkList(L)){
+			printf("Position: (between 1 to %d)\n", ListLength(*L)+1);
+            printf("Please enter the position and the element you want to insert:(spaced by space)\n");  
+			int insertPosition;
+			ElemType insertElem;
+			scanf("%d %d",&insertPosition,&insertElem);
+			if(ListInsert(L,insertPosition,insertElem)==OK) printf("Successfully inserted.\n");
+			else if(ListInsert(L,insertPosition,insertElem)==ERROR) printf("The position is illegal.\n");
+			}
+			getchar();
+			break;
+		case 11:
+			if(checkList(L)){
+			printf("Position: (between 1 to %d)\n", ListLength(*L));
+            printf("Please enter the position and the element you want to delete:(spaced by space)\n");  
+			int deletePosition;
+			ElemType deleteElem;
+			scanf("%d %d",&deletePosition,&deleteElem);
+			if(ListDelete(L,deletePosition,&deleteElem)==OK) printf("Delete %d in position %d.\n", deleteElem, deletePosition);
+			else if(ListDelete(L,deletePosition,&deleteElem)==ERROR) printf("The position is illegal.\n");
+			}
+			getchar();
+			break;
+		case 12:
+			if(checkList(L)){
+				if(ListTraverse(*L,visit)==OK) printf("Successfully traveled all elements.\n");
+			}    
+			getchar();
+			break;
+		case 13:
+			if(Lists.length==0) printf("There are no linear tables.\n");
+            else ShowAllList(Lists);     
+			getchar();
+			break;
+		case 14:
+            printf("Please enter the name you want to change to:\n");
+            char temp_change[MAX_NAME_LENGTH];
+            scanf("%s",temp_change);
+            if((L=ChangeList(temp_change,&current))!=NULL) printf("Successfully changed.\n");
+            else printf("There is no linear table named %s.\n",temp_change);
+            getchar();
+            break;
+        case 15:
+            printf("Please enter the name you want to remove:\n");
+            char temp_remove[MAX_NAME_LENGTH];
+            scanf("%s",temp_remove);
+            int p;
+            if(RemoveList(&Lists,temp_remove,&p)==OK) 
+            {
+                printf("Successfully removed.\n");
+                if(p==current) L=NULL;
+            }
+            else printf("There is no linear table named %s.\n",temp_remove);
+            getchar();
+            break;
+        case 16:
+            printf("Please enter the name you want to initialize:\n");
+            char temp_init[MAX_NAME_LENGTH];
+            scanf("%s",temp_init);
+            SqList *LL;
+            LL=NULL;
+            for(int i=0;i<Lists.length;i++)
+                if(strcmp(Lists.elem[i].name,temp_init)==0) 
+                    LL=Lists.elem[i].L;
+            if(InitList(LL)==OK)  printf("Successfully initialize.\n");
+            else if(InitList(LL)==ERROR)  printf("There is no linear table named %s.\n",temp_init);       
+                 else printf("The linear table already exists.\n");
+            getchar();
+            break;
+        case 17:
+            SaveData(Lists);
+            printf("Successfully Saved\n");
+            getchar();
+            break;
+        case 0:
+			break;
+		default:
+			printf("The feature number is incorrect.\n");
+		}//end of switch
+	}//end of while
+	printf("Welcome to use this system next time!\n");
+	return 0;
+}
+
+status InitList(SqList *L)
+{
+    if(L==NULL) return ERROR;
+    if(L->elem==NULL)
+    {
+        L->elem=(int *)malloc(sizeof(int)*LIST_INIT_SIZE);
+        L->listsize=LIST_INIT_SIZE;
+        L->length=0;
+        return OK;
+    }
+    else return INFEASIBLE;
+}
+
+status DestroyList(SqList *L)
+{
+    if(L->elem==NULL)
+        return INFEASIBLE;
+    else
+    {
+		L->listsize=0;
+        L->length=0;
+        free(L->elem);
+        L->elem=NULL;
+        return OK;
+    }
+}
+
+status ClearList(SqList *L)
+{
+    if(L->elem==NULL)
+        return INFEASIBLE;
+    else
+    {
+        L->length=0;
+        return OK;
+    }
+}
+
+status ListEmpty(SqList L)
+{
+    if(L.elem==NULL)
+        return INFEASIBLE;
+    else
+    {
+        if(L.length==0) return TRUE;
+        else return FALSE;
+    }
+}
+
+int ListLength(SqList L)
+{
+    if(L.elem==NULL)
+        return INFEASIBLE;
+    else
+        return L.length;
+}
+
+status GetElem(SqList L,int i,ElemType *e)
+{
+    if(L.elem==NULL)
+        return INFEASIBLE;
+    else if(i<=0||i>L.length)
+        return ERROR;
+        else{
+            *e=L.elem[i-1];
+            return OK;
+        }
+}
+
+int LocateElem(SqList L,ElemType e)
+{
+    if(L.elem==NULL)
+        return INFEASIBLE;
+    else
+    {
+        int i=0;
+        for(i;i<L.length;i++)
+        {
+            if(L.elem[i]==e)
+            return i+1;
+        }
+        if(i>=L.length) return ERROR;
+    }
+}
+
+status PriorElem(SqList L,ElemType e,ElemType *pre)
+{
+    if(L.elem==NULL)
+        return INFEASIBLE;
+    else
+    {
+        int i=0;
+        for(i;i<L.length;i++)
+        {
+            if(L.elem[i]==e)
+            {
+                if(i==0) return ERROR;
+                else{
+                    *pre=L.elem[i-1];
+                    return OK;
+                }
+            }
+        }
+        if(i>=L.length) return ERROR;
+    }
+}
+
+status NextElem(SqList L,ElemType e,ElemType *next)
+{
+    if(L.elem==NULL)
+        return INFEASIBLE;
+    else
+    {
+        int i=0;
+        for(i;i<L.length;i++)
+        {
+            if(L.elem[i]==e)
+            {
+                if(i==L.length-1) return ERROR;
+                else{
+                    *next=L.elem[i+1];
+                    return OK;
+                }
+            }
+        }
+        if(i>=L.length) return ERROR;
+    }
+}
+
+status ListInsert(SqList *L,int i,ElemType e)
+{
+    if(L->elem==NULL) return INFEASIBLE;
+    if(i<=0||i>L->length+1) return ERROR;
+    else{
+        if(L->length>=L->listsize)
+        {
+            ElemType *newbase;
+            newbase=(ElemType *)realloc(L->elem,sizeof(ElemType)*L->listsize+LISTINCREMENT);
+            if(newbase)
+            {
+                L->elem=newbase;
+                L->listsize+=LISTINCREMENT;
+            }
+        }
+    }
+    for(int j=L->length-1;j>=i-1;j--)
+        L->elem[j+1]=L->elem[j];
+    L->elem[i-1]=e;
+    L->length++;
+    return OK;
+}
+
+status ListDelete(SqList *L,int i,ElemType *e)
+{
+    if(L->elem==NULL) return INFEASIBLE;
+    if(i<=0||i>L->length) return ERROR;
+    *e=L->elem[i-1];
+    for(int j=i-1;j<L->length-1;j++)
+        L->elem[j]=L->elem[j+1];
+    L->length--;
+    return OK;
+}
+
+status ListTraverse(SqList L,void (* visit)(ElemType))
+{
+    if(L.elem==NULL) return INFEASIBLE;
+    if (L.length)
+    {   //迭代次数
+        int literate_time = 0;
+        for (; literate_time < L.length; literate_time++)
+        {   //对每一个元素执行visit函数，此处visit函数的作用是打印元素
+            visit(L.elem[literate_time]);
+        }
+        printf("\n");
+        return OK;
+    }
+    else
+    {
+        printf("List length = 0, failed to travel\n");
+        return ERROR;
+    }  
+}
+
+void ShowAllList(LISTS Lists)
+{
+    for(int i=0;i<Lists.length;i++)
+    {
+        printf("name:%s\n",Lists.elem[i].name);
+        printf("elements:");
+        if(checkList(Lists.elem[i].L)==!TRUE) return;
+            for(int j=0;j<Lists.elem[i].L->length;j++)
+            visit(Lists.elem[i].L->elem[j]);
+        printf("\n");
+    }
+}
+
+SqList* ChangeList(char ListName[],int * current)
+{
+    for(int i=0;i<Lists.length;i++)
+    {
+        if(strcmp(Lists.elem[i].name,ListName)==0)
+        {
+            *current=i;
+            return Lists.elem[i].L;
+        }
+    }
+    return NULL;
+}
+
+status RemoveList(LISTS *Lists,char ListName[],int *p)
+{
+    for(int i=0;i<Lists->length;i++)
+    {
+        if(strcmp(Lists->elem[i].name,ListName)==0)
+        {
+            *p=i;
+            for(int j=i;j<Lists->length;j++)
+            {
+                Lists->elem[i]=Lists->elem[i+1];
+            }
+            Lists->length--;
+            return OK;
+        }
+    }
+    return ERROR;
+}
+
+status SaveData(LISTS Lists)
+{
+    printf("Please enter the filename:\n");
+    char FileName[MAX_NAME_LENGTH];
+    scanf("%s",FileName);
+    FILE * fp = fopen(FileName, "w");
+    //尝试打开，如果文件不存在，则创建文件
+    if (fp == NULL)
+        fp = fopen(FileName, "wb");
+    int literate_time = 0;
+    for (; literate_time < MAX_LIST_NUM; literate_time++)
+    {
+        if (Lists.elem[literate_time].L && Lists.elem[literate_time].L->length)
+        {   //按照一定格式将数据保存到文件中
+            fprintf(fp, "name:%s length:%d\n", Lists.elem[literate_time].name, Lists.elem[literate_time].L->length);
+            for(int i=0; i < Lists.elem[literate_time].L->length; i++)
+                fprintf(fp, "%d\n", Lists.elem[literate_time].L->elem[i]);
+            fprintf(fp,"\n");
+        }
+    }
+    fclose(fp);
+    return OK;
+}
