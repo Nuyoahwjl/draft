@@ -1,3 +1,4 @@
+//稀疏矩阵加法
 #include <stdio.h>
 #define  MAXSIZE 10000
 typedef int ElemType;
