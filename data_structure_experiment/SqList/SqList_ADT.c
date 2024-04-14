@@ -96,7 +96,7 @@ status checkList(SqList *L)
 	if (!L)
     {
         printf("The linear table does not exist.\n");
-        printf("You can enter 14 to choose a list.\n")
+        printf("You can enter 14 to choose a list.\n");
         return FALSE;
     }
     else if (!L->elem)
