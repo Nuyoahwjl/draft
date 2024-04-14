@@ -1,3 +1,9 @@
+/*清空：L->length=0,但L->elem仍存在空间*/
+/*销毁：L->length=0,且L->elem=NULL*/
+/*删除：从Lists中删除，且L=NULL,Lists.length--*/
+
+
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -13,7 +19,7 @@ typedef int ElemType; //数据元素类型定义
 #define LISTINCREMENT 10 //线性表扩容容量
 #define MAX_LIST_NUM 10 //线性表数量最大值
 #define MAX_NAME_LENGTH 30 //每个线性表名称长度最大值
-// #define FileName "data.txt"//文件名
+#define FileName "data.txt"//文件名
 /*线性表（顺序结构）的定义*/
 typedef struct{ 
     ElemType * elem;
@@ -29,7 +35,8 @@ typedef struct{
 }LISTS;
 LISTS Lists; //线性表集合Lists
 int current=0; //当前线性表在Lists中的位置
-char FileName[MAX_NAME_LENGTH];
+// char FileName[MAX_NAME_LENGTH];
+
 
 /*函数声明*/
 void printMenu();
@@ -545,6 +552,7 @@ status RemoveList(LISTS *Lists,char ListName[],int *p)
     {
         if(strcmp(Lists->elem[i].name,ListName)==0)
         {
+            free(Lists->elem[i].L);
             *p=i;
             for(int j=i;j<Lists->length;j++)
             {
@@ -559,16 +567,16 @@ status RemoveList(LISTS *Lists,char ListName[],int *p)
 
 status SaveData(LISTS Lists)
 {
-    printf("Please enter the filename:\n");
-    scanf("%s",FileName);
+    // printf("Please enter the filename:\n");
+    // scanf("%s",FileName);
     FILE * fp = fopen(FileName, "w");//覆盖写入
     //尝试打开，如果文件不存在，则创建文件
     if (fp == NULL)
         fp = fopen(FileName, "wb");
     int literate_time = 0;
-    for (; literate_time < MAX_LIST_NUM; literate_time++)
+    for (; literate_time < Lists.length; literate_time++)
     {
-        if (Lists.elem[literate_time].L )//&& Lists.elem[literate_time].L->length
+        if (Lists.elem[literate_time].L)//&& Lists.elem[literate_time].L->length//&&Lists.elem[literate_time].L->elem 
         {   //按照一定格式将数据保存到文件中
             fprintf(fp, "name:%s length:%d\n", Lists.elem[literate_time].name, Lists.elem[literate_time].L->length);
             for(int i=0; i < Lists.elem[literate_time].L->length; i++)
@@ -584,8 +592,8 @@ status LoadData(LISTS *LL)
 //还有一种读取方法为仅显示，但当前Lists并不会更新为文件中内容。
 //Lists只是暂存的，如果没有Save就去Load，当前暂存的Lists会被文件内容覆盖。
 {   //尝试打开文件
-    printf("Please enter the filename:\n");
-    scanf("%s",FileName);
+    // printf("Please enter the filename:\n");
+    // scanf("%s",FileName);
     FILE * fp = fopen(FileName, "r");
     if (fp == NULL)
     {   //如果文件不存在
@@ -609,6 +617,7 @@ status LoadData(LISTS *LL)
         LL->elem[literate_time].L->length = list_length;
         LL->elem[literate_time].L->listsize = LIST_INIT_SIZE;
         LL->elem[literate_time].L->elem = (ElemType *)malloc(sizeof(ElemType) * LIST_INIT_SIZE);
+        //若已销毁的线性表被存进文件，那么读取文件时自动为其初始化
         for (int i=0; i < list_length; i++)
         {
             fscanf(fp, "%d\n", &current_elem);
@@ -621,5 +630,4 @@ status LoadData(LISTS *LL)
     }
     return OK;
 }
-
 
