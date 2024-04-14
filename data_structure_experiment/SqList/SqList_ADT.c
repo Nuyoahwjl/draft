@@ -1,9 +1,6 @@
 /*清空：L->length=0,但L->elem仍存在空间*/
 /*销毁：L->length=0,且L->elem=NULL*/
 /*删除：从Lists中删除，且L=NULL,Lists.length--*/
-
-
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
