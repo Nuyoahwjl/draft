@@ -61,7 +61,7 @@ void printMenu()
     printf("|      7.  Locate Elem            8.  Get Prior Element       |\n");
     printf("|      9.  Get Next Element       10. Insert Element          |\n");
     printf("|      11. Delete Element         12. Show Current List       |\n");
-    printf("|      13. Show All List          14. Change Current List     |\n");
+    printf("|      13. Show All Lists         14. Change Current List     |\n");
     printf("|      15. Remove a List          16. Init a List             |\n");
     printf("|      17. Save All Data          18. Load Data               |\n");
     printf("|                         0.EXIT                              |\n");
