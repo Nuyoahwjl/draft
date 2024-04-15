@@ -14,7 +14,7 @@ int countSubarrays(int arr[], int n, int k) {
             // 如果子数组和等于 k，增加计数
             if (sum == k) {
                 count++;
-                break;
+                // break;
             }
             // 如果子数组和大于 k，结束内层循环
             // if (sum > k) {

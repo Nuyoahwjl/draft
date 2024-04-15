@@ -57,6 +57,7 @@ status ListDelete(SqList *L, int i, ElemType *e);
 status ListTraverse(SqList L, void (*visit)(ElemType));
 status SortCurrent(SqList *L);
 ElemType MaxSubArray(SqList L);
+int SubArrayNum(SqList L,ElemType k);
 void ShowAllList(LISTS Lists);
 SqList *ChangeList(char ListName[], int *current);
 status RemoveList(LISTS *Lists, char ListName[], int *p);
@@ -76,10 +77,10 @@ void printMenu()
     printf("|      9.  Get Next Element       10. Insert Element          |\n");
     printf("|      11. Delete Element         12. Show Current List       |\n");
     printf("|      13. Sort Current List      14. Max Sub Array           |\n");
-    printf("|      15. Show All Lists         16. Change Current List     |\n");
-    printf("|      17. Remove a List          18. Init a List             |\n");
-    printf("|      19. Save All Data          20. Load All Data           |\n");
-    printf("|                         0.EXIT                              |\n");
+    printf("|      15. Sub Array Num          16. Show All Lists          |\n");
+    printf("|      17. Change Current List    18. Remove a List           |\n");
+    printf("|      19. Init a List            20. Save All Data           |\n");
+    printf("|      21. Load All Data          0.  EXIT                    |\n");
     printf("|                                                             |\n");
     printf("|-------------------------------------------------------------|\n\n");
     // printf("|-------Please Choose Your Operation from Options above-------|\n");
@@ -99,7 +100,7 @@ status checkList(SqList *L)
     if (!L)
     {
         printf("The linear table does not exist.\n");
-        printf("You can enter 1 to create a list or 16 to choose a list.\n");
+        printf("You can enter 1 to create a list or 17 to choose a list.\n");
         return FALSE;
     }
     else if (!L->elem)
@@ -320,18 +321,37 @@ int main()
                 if (L->length)
                     printf("Max Sub=%d", MaxSubArray(*L));
                 else
-                    printf("List length = 0, failed to sort.\n");
+                    printf("List length = 0, failed to find.\n");
             }
             getchar();
             break;
         case 15:
+            if (checkList(L))
+            {
+                if (L->length)
+                {
+                    printf("Please enter the sum of the continuous subarrays you want to query:\n");
+                    int k;
+                    scanf("%d", &k);
+                    int num = SubArrayNum(*L, k);
+                    if (num > 1)
+                        printf("There are %d continuous subarrays with an sum of %d.\n", num, k);
+                    else
+                        printf("There is %d continuous subarray with an sum of %d.\n", num, k);
+                }
+                else
+                    printf("List length = 0, failed to find.\n");
+            }
+            getchar();
+            break;
+        case 16:
             if (Lists.length == 0)
                 printf("There are no linear tables.\n");
             else
                 ShowAllList(Lists);
             getchar();
             break;
-        case 16:
+        case 17:
             printf("Please enter the name you want to change to:\n");
             char temp_change[MAX_NAME_LENGTH];
             scanf("%s", temp_change);
@@ -341,7 +361,7 @@ int main()
                 printf("There is no linear table named %s.\n", temp_change);
             getchar();
             break;
-        case 17:
+        case 18:
             printf("Please enter the name you want to remove:\n");
             char temp_remove[MAX_NAME_LENGTH];
             scanf("%s", temp_remove);
@@ -358,7 +378,7 @@ int main()
                 printf("There is no linear table named %s.\n", temp_remove);
             getchar();
             break;
-        case 18:
+        case 19:
             printf("Please enter the name you want to initialize:\n");
             char temp_init[MAX_NAME_LENGTH];
             scanf("%s", temp_init);
@@ -375,12 +395,12 @@ int main()
                 printf("The linear table already exists.\n");
             getchar();
             break;
-        case 19:
+        case 20:
             SaveData(Lists);
             printf("Successfully Saved.\n");
             getchar();
             break;
-        case 20:
+        case 21:
             printf("Are you sure you want to read from the file?\n");
             printf("The data that is not currently saved will be gone.\n");
             printf("confirm:1  cancel:0\n");
@@ -393,7 +413,7 @@ int main()
                 {
                     L = NULL;
                     printf("Successfully Loaded.\n");
-                    printf("Now you can enter 15 to query all linear tables in the file.");
+                    printf("Now you can enter 16 to query all linear tables in the file.");
                 }
             }
             getchar();
@@ -650,6 +670,28 @@ ElemType MaxSubArray(SqList L)
         }
         return max_sum;
     }
+}
+
+int SubArrayNum(SqList L, ElemType k)
+{
+    int count = 0;
+    // 遍历数组，计算以每个元素为起点的子数组的和
+    for (int i = 0; i < L.length; i++)
+    {
+        int sum = 0;
+        // 将当前元素与后续元素相加，直到子数组和大于等于 k 或者到达数组末尾
+        for (int j = i; j < L.length; j++)
+        {
+            sum += L.elem[j];
+            // 如果子数组和等于 k，增加计数
+            if (sum == k)
+            {
+                count++;
+                // break;
+            }
+        }
+    }
+    return count;
 }
 
 void ShowAllList(LISTS Lists)
