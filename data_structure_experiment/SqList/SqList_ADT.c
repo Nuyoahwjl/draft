@@ -81,7 +81,7 @@ void printMenu()
     printf("|      19. Save All Data          20. Load All Data           |\n");
     printf("|                         0.EXIT                              |\n");
     printf("|                                                             |\n");
-    printf("|-------------------------------------------------------------|\n");
+    printf("|-------------------------------------------------------------|\n\n");
     // printf("|-------Please Choose Your Operation from Options above-------|\n");
     // printf("|-------------------------------------------------------------|\n\n");
 }
@@ -131,8 +131,8 @@ int main()
         printf("|-------Please Choose Your Operation from Options above-------|\n");
         printf("|-------------------------------------------------------------|\n\n");
         scanf("%d", &op);
-        // system("cls");
-        // printMenu();
+        system("cls");
+        printMenu();
         switch (op)
         {
         case 1:
