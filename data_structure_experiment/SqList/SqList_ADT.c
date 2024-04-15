@@ -56,6 +56,7 @@ status ListInsert(SqList *L, int i, ElemType e);
 status ListDelete(SqList *L, int i, ElemType *e);
 status ListTraverse(SqList L, void (*visit)(ElemType));
 status SortCurrent(SqList *L);
+ElemType MaxSubArray(SqList L);
 void ShowAllList(LISTS Lists);
 SqList *ChangeList(char ListName[], int *current);
 status RemoveList(LISTS *Lists, char ListName[], int *p);
@@ -74,7 +75,7 @@ void printMenu()
     printf("|      7.  Locate Elem            8.  Get Prior Element       |\n");
     printf("|      9.  Get Next Element       10. Insert Element          |\n");
     printf("|      11. Delete Element         12. Show Current List       |\n");
-    printf("|      13. Sort Current List                                  |\n");
+    printf("|      13. Sort Current List      14. Max Sub Array           |\n");
     printf("|      15. Show All Lists         16. Change Current List     |\n");
     printf("|      17. Remove a List          18. Init a List             |\n");
     printf("|      19. Save All Data          20. Load All Data           |\n");
@@ -98,7 +99,7 @@ status checkList(SqList *L)
     if (!L)
     {
         printf("The linear table does not exist.\n");
-        printf("You can enter 1 to create a list or 14 to choose a list.\n");
+        printf("You can enter 1 to create a list or 16 to choose a list.\n");
         return FALSE;
     }
     else if (!L->elem)
@@ -115,6 +116,7 @@ void visit(ElemType item)
 {
     printf("%d ", item);
 }
+
 /*主函数*/
 int main()
 {
@@ -312,6 +314,16 @@ int main()
             }
             getchar();
             break;
+        case 14:
+            if (checkList(L))
+            {
+                if (L->length)
+                    printf("Max Sub=%d", MaxSubArray(*L));
+                else
+                    printf("List length = 0, failed to sort.\n");
+            }
+            getchar();
+            break;
         case 15:
             if (Lists.length == 0)
                 printf("There are no linear tables.\n");
@@ -381,7 +393,7 @@ int main()
                 {
                     L = NULL;
                     printf("Successfully Loaded.\n");
-                    printf("Now you can enter 13 to query all linear tables in the file.");
+                    printf("Now you can enter 15 to query all linear tables in the file.");
                 }
             }
             getchar();
@@ -592,7 +604,7 @@ status ListTraverse(SqList L, void (*visit)(ElemType))
     }
     else
     {
-        printf("List length = 0, failed to travel\n");
+        printf("List length = 0, failed to travel.\n");
         return ERROR;
     }
 }
@@ -617,8 +629,26 @@ status SortCurrent(SqList *L)
     }
     else
     {
-        printf("List length = 0, failed to sort\n");
+        printf("List length = 0, failed to sort.\n");
         return ERROR;
+    }
+}
+
+ElemType MaxSubArray(SqList L)
+{
+    if (L.length)
+    {
+        int max_sum = L.elem[0];
+        int current_sum = L.elem[0];
+        // 从数组的第二个元素开始遍历
+        for (int i = 1; i < L.length; i++)
+        {
+            // 更新当前子数组的和，使其为当前元素值与当前元素值与前一个子数组的和中的较大值
+            current_sum = (current_sum + L.elem[i] > L.elem[i]) ? current_sum + L.elem[i] : L.elem[i];
+            // 更新最大和，使其为当前子数组的和和最大和中的较大值
+            max_sum = (current_sum > max_sum) ? current_sum : max_sum;
+        }
+        return max_sum;
     }
 }
 
