@@ -87,8 +87,8 @@ void printMenu()
     printf("|                        0.  EXIT                             |\n");
     printf("|                                                             |\n");
     printf("|-------------------------------------------------------------|\n\n");
-    // printf("|-------Please Choose Your Operation from Options above-------|\n");
-    // printf("|-------------------------------------------------------------|\n\n");
+ // printf("|-------Please Choose Your Operation from Options above-------|\n");
+ // printf("|-------------------------------------------------------------|\n\n");
 }
 
 /*Lists初始化，将所有线性表指针置为空*/
