@@ -1,18 +1,15 @@
+/* 引用头文件 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-/*定义常量*/
+/* 定义常量 */
 #define TRUE 1
 #define FALSE 0
 #define OK 1
 #define ERROR 0
 #define INFEASIBLE -1
 #define OVERFLOW -2
-
-/*定义数据类型*/
-typedef int status;
-typedef int ElemType;       // 数据元素类型定义
 #define LIST_INIT_SIZE 100  // 线性表初始容量
 #define LISTINCREMENT 10    // 线性表扩容容量
 #define MAX_LIST_NUM 10     // 线性表数量最大值
@@ -20,7 +17,11 @@ typedef int ElemType;       // 数据元素类型定义
 #define FileName "data.txt" // 文件名
 // char FileName[MAX_NAME_LENGTH];
 
-/*线性表（顺序结构）的定义*/
+/* 定义数据类型 */
+typedef int status;
+typedef int ElemType;       // 数据元素类型定义
+
+/* 线性表（顺序结构）的定义 */
 typedef struct
 {
     ElemType *elem; // 存储空间基址
@@ -28,7 +29,7 @@ typedef struct
     int listsize;   // 当前分配的存储容量
 } SqList;
 
-/*线性表的集合类型定义*/
+/* 线性表的集合类型定义 */
 typedef struct
 {
     struct
@@ -39,11 +40,11 @@ typedef struct
     int length; // 当前线性表数量
 } LISTS;
 
-/*全局变量*/
+/* 全局变量 */
 LISTS Lists;     // 线性表集合Lists
 int current = 0; // 当前线性表在Lists中的位置
 
-/*函数声明*/
+/* 函数声明 */
 void printMenu();                                         // 打印菜单
 void clearAllList(LISTS Lists);                           // Lists初始化
 status checkList(SqList *L);                              // 检查线性表合法性
@@ -69,7 +70,7 @@ status RemoveList(LISTS *Lists, char ListName[], int *p); // 移除指定线性�
 status SaveData(LISTS Lists);                             // 将线性表数据保存到文件
 status LoadData(LISTS *LL);                               // 从文件加载线性表数据
 
-/*打印菜单*/
+/* 打印菜单 */
 void printMenu()
 {
     printf("|---------Menu for Linear Table On Sequence Structure---------|\n");
@@ -91,7 +92,7 @@ void printMenu()
     // printf("|-------------------------------------------------------------|\n\n");
 }
 
-/*Lists初始化，将所有线性表指针置为空*/
+/* Lists初始化，将所有线性表指针置为空 */
 void clearAllList(LISTS Lists)
 {
     // 遍历所有线性表指针，将其置为空
@@ -99,7 +100,7 @@ void clearAllList(LISTS Lists)
         Lists.elem[i].L = NULL;
 }
 
-/*检查当前线性表是否合法*/
+/* 检查当前线性表是否合法 */
 status checkList(SqList *L)
 {
     // 检查线性表指针是否为空，为空则输出提示信息
@@ -120,16 +121,17 @@ status checkList(SqList *L)
         return TRUE;
 }
 
-/*用于遍历时输出*/
+/* 用于遍历时输出 */
 void visit(ElemType item)
 {
     // 输出当前遍历到的元素
     printf("%d ", item);
 }
 
-/*主函数*/
+/* 主函数 */
 int main()
 {
+    // system("color 38");
     printMenu();         // 打印菜单
     clearAllList(Lists); // 初始化Lists
     SqList *L = NULL;    // 当前线性表指针

@@ -1,5 +1,6 @@
 #include "stdio.h"
 #include "stdlib.h"
+using namespace std;
 #define TRUE 1
 #define FALSE 0
 #define OK 1
@@ -10,11 +11,19 @@ typedef int status;
 typedef int ElemType; //数据元素类型定义
 #define LIST_INIT_SIZE 100
 #define LISTINCREMENT  10
-typedef int ElemType;
 typedef struct LNode{  //单链表（链式结构）结点的定义
       ElemType data;
       struct LNode *next;
 }LNode,*LinkList;
+
+// int main()
+// {
+//     LinkList L=NULL;
+//     InitList(L);
+//     if(L==NULL) printf("no");
+//     else printf("yes");
+//     return 0;
+// }
 
 status InitList(LinkList &L)
 // 线性表L不存在，构造一个空的线性表，返回OK，否则返回INFEASIBLE。
