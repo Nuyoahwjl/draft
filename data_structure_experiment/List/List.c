@@ -85,8 +85,7 @@ status DestroyList(LinkList &L)
         memset(p,0,sizeof(LNode));
         free(p);
     }
-
-
+    
     int main()
     {
         LinkList L,tail;
