@@ -76,9 +76,9 @@ void printMenu()
     printf("|---------Menu for Linear Table On Sequence Structure---------|\n");
     printf("|                                                             |\n");
     printf("|      1.  Create a List          2.  Destroy Current List    |\n");
-    printf("|      3.  Clear current List     4.  Empty or Not            |\n");
+    printf("|      3.  Clear Current List     4.  Empty or Not            |\n");
     printf("|      5.  Show List Length       6.  Get Element             |\n");
-    printf("|      7.  Locate Elem            8.  Get Prior Element       |\n");
+    printf("|      7.  Locate Element         8.  Get Prior Element       |\n");
     printf("|      9.  Get Next Element       10. Insert Element          |\n");
     printf("|      11. Delete Element         12. Show Current List       |\n");
     printf("|      13. Sort Current List      14. Max Sub Array           |\n");

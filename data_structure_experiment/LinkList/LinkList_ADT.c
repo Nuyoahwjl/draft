@@ -43,9 +43,9 @@ void printMenu2(void); // 单个链表的操作菜单
 status AddList(LISTS *LL,char *name); // 新增一个链表
 status RemoveList(LISTS *LL,char *name); // 移除一个链表
 status ShowAllLists(LISTS Lists); // 显示所有链表
-int SelectList(LISTS Lists,char*name); // 选择一个链表并进入子菜单
+int SelectList(LISTS Lists,char *name); // 选择一个链表并进入子菜单
 void main2(LinkList *L,int loc); // 操作单个链表的子页面
-status InitList(LinkList **L); // 初始化链表
+status InitList(LinkList *L); // 初始化链表
 
 /* 主函数 */
 int main()
@@ -144,7 +144,7 @@ void main2(LinkList *L,int loc)
         switch(op)
         {
             case 1:
-                if(InitList(&L)==OK) printf("Successfully initialized!\n");
+                if(InitList(L)==OK) printf("Successfully initialized!\n");
                 else printf("You've initialized current List!\n");
                 break;
             case 0:
@@ -255,12 +255,12 @@ int SelectList(LISTS Lists, char *name)
 }
 
 /* 初始化链表 */
-status InitList(LinkList **L)
+status InitList(LinkList *L)
 {
-    if(**L==NULL)
+    if(*L==NULL)
     {
-        **L=(LinkList)malloc(sizeof(LNode));
-        (**L)->next=NULL;
+        *L=(LinkList)malloc(sizeof(LNode));
+        (*L)->next=NULL;
         return OK;
     }
     else return INFEASIBLE;
