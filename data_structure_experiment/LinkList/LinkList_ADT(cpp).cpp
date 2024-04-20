@@ -15,7 +15,7 @@
 #define LISTINCREMENT 10         // 每次新增长度
 #define MAX_LIST_NUM 10          // 链表数量最大值
 #define MAX_NAME_LENGTH 30       // 每个线性表名称长度最大值
-#define FileName "data(cpp).txt" // 文件名
+#define FileName "data.txt"      // 文件名
 /* 定义数据元素类型 */
 typedef int ElemType;
 typedef int status;
@@ -60,6 +60,10 @@ status ListDelete(LinkList &L, int i, ElemType &e);       // 删除指定位置�
 void visit(ElemType item);                                // 用于遍历时输出
 status ListTraverse(LinkList L, void (*visit)(ElemType)); // 显示当前链表所有元素
 void ListReverse(LinkList &L);                            // 逆置当前链表
+void RemoveNthFromEnd(LinkList &L, int n);                // 删除倒数第n个元素
+void SortList(LinkList &L);                               // 给当前链表排序
+void SaveData(LISTS Lists);                               // 保存到文件
+void LoadData(LISTS &Lists);                              // 从文件中加载
 
 /* 主函数 */
 int main()
@@ -129,6 +133,31 @@ int main()
                 printf("The linear table does not exist.\n");
             break;
         }
+        case 5:
+            printf("The lists that are not initialized will not be saved.\n");
+            printf("confirm:1  cancel:0\n");
+            int save_option;
+            scanf("%d", &save_option);
+            if (save_option)
+            {
+                SaveData(Lists);
+                printf("Successfully Saved.\n");
+            }
+            break;
+        case 6:
+            printf("Are you sure you want to load from the file?\n");
+            printf("The data that is not currently saved will be gone.\n");
+            printf("confirm:1  cancel:0\n");
+            // 从文件中读取会覆盖当前Lists
+            int load_option;
+            scanf("%d", &load_option);
+            if (load_option)
+            {
+                LoadData(Lists);
+                printf("Successfully Loaded.\n");
+                printf("Now you can enter 3 to query all lists in the file.\n");
+            }
+            break;
         case 0:
             break;
         default:
@@ -324,13 +353,39 @@ void main2(LinkList &L)
                     printf("There is no element.\n");
             }
             break;
+        case 14:
+            if (checkList(L))
+            {
+                if (ListLength(L))
+                {
+                    int n;
+                    printf("Which element do you want to remove from end?\n");
+                    scanf("%d", &n);
+                    RemoveNthFromEnd(L, n);
+                }
+                else
+                    printf("There is no element.\n");
+            }
+            break;
+        case 15:
+            if (checkList(L))
+            {
+                if (ListLength(L))
+                {
+                    SortList(L);
+                    printf("Successfully sorted.\n");
+                }
+                else
+                    printf("There is no element.\n");
+            }
+            break;
         case 0:
             system("cls");
             return;
         default:
             printf("The feature number is incorrect.\n");
         } // end of switch
-    }// end of while
+    }     // end of while
 }
 
 /* 判断链表是否初始化 */
@@ -349,11 +404,13 @@ void printMenu1()
 {
     printf("|=================Menu for multiple LinkLists=================|\n");
     printf("|-------------------------------------------------------------|\n");
-    printf("|                 1.    Create a LinkList                     |\n"); // 打印操作1的描述
-    printf("|                 2.    Delete a LinkList                     |\n"); // 打印操作2的描述
-    printf("|                 3.    Show all LinkLists                    |\n"); // 打印操作3的描述
-    printf("|                 4. Select a single LinkList                 |\n"); // 打印操作4的描述
-    printf("|                 0.          EXIT                            |\n"); // 打印操作0的描述
+    printf("|                 1.    Create a LinkList                     |\n");
+    printf("|                 2.    Delete a LinkList                     |\n");
+    printf("|                 3.    Show all LinkLists                    |\n");
+    printf("|                 4. Select a single LinkList                 |\n");
+    printf("|                 5.  Save All Data To File                   |\n");
+    printf("|                 6. Load All Data From File                  |\n");
+    printf("|                 0.          EXIT                            |\n");
     printf("|=============================================================|\n\n");
 }
 
@@ -368,8 +425,8 @@ void printMenu2()
     printf("|      7.  Locate Element         8.  Get Prior Element       |\n");
     printf("|      9.  Get Next Element       10. Insert Element          |\n");
     printf("|      11. Delete Element         12. Show All Elements       |\n");
-    printf("|      13. Reverse Current List   14. Sort Current List       |\n");
-    printf("|                        0.  EXIT                             |\n");
+    printf("|      13. Reverse Current List   14. Remove From End         |\n");
+    printf("|      15. Sort Current List      0.  EXIT                    |\n");
     printf("|-------------------------------------------------------------|\n\n");
 }
 
@@ -665,28 +722,121 @@ status ListTraverse(LinkList L, void (*visit)(ElemType))
 }
 
 /* 逆置当前链表 */
-//1.递归算法
-// status ListReverse(LinkList &L)
-// {
-//     LinkList p = L->next;
-//     if (L->next == NULL || p->next == NULL)
-//         return;
-//     L->next = p->next;
-//     ListReverse(L);
-//     p->next->next = p;
-//     p->next = NULL;
-// }
-//2.用p指向首节点，再将头指针的指针域赋空，用p遍链表，采用头插法插入
 void ListReverse(LinkList &L)
 {
-    LinkList p=L->next;
-    L->next=NULL;
+    // 1.递归算法
+    // LinkList p = L->next;
+    // if (L->next == NULL || p->next == NULL)
+    //     return;
+    // L->next = p->next;
+    // ListReverse(L);
+    // p->next->next = p;
+    // p->next = NULL;
+
+    // 2.用p指向首节点，再将头指针的指针域赋空，用p遍链表，采用头插法插入
+    LinkList p = L->next;
+    L->next = NULL;
     LinkList q;
-    while(p)
+    while (p)
     {
-        q=p->next;
-        p->next=L->next;
-        L->next=p;
-        p=q;
+        q = p->next;
+        p->next = L->next;
+        L->next = p;
+        p = q;
     }
+}
+
+/* 删除倒数第n个元素 */
+void RemoveNthFromEnd(LinkList &L, int n)
+{
+    int len = ListLength(L);
+    ElemType e;
+    if (ListDelete(L, len - n + 1, e) == OK) // 删除成功
+        printf("Successfully deleted.");
+    else if (ListDelete(L, len - n + 1, e) == ERROR) // 删除失败
+        printf("The position is illegal.\n");
+}
+
+/* 给当前链表排序 */
+void SortList(LinkList &L)
+{
+    // 交换数据域的冒泡排序
+    int len=ListLength(L);
+    LinkList p=L->next;
+    for(int i=1;i<len;i++) // 共进行len-1次，每次把最大数移到末尾
+    {
+        p=L->next; // 每一轮应该从第一个元素开始比较
+        for(int j=1;j<len-i;j++)
+        {
+            int temp;
+            if(p->data>p->next->data)
+            {
+                temp=p->data;
+                p->data=p->next->data;
+                p->next->data=temp;
+            }
+            p=p->next;
+        }
+    }
+}
+
+/* 保存到文件 */
+void SaveData(LISTS Lists)
+{
+    FILE *fp = fopen(FileName, "w"); // 覆盖写入
+    if (fp == NULL)                  // 尝试打开，如果文件不存在，则创建文件
+        fp = fopen(FileName, "wb");
+    LinkList p;
+    for (int i = 0; i < Lists.length; i++)
+    {
+        if (Lists.elem[i].L != NULL)
+        {
+            fprintf(fp, "name:%s length:%d\n", Lists.elem[i].name, ListLength(Lists.elem[i].L));
+            p = Lists.elem[i].L->next;
+            while (p)
+            {
+                fprintf(fp, "%d\n", p->data);
+                p = p->next;
+            }
+            fprintf(fp, "\n");
+        }
+    }
+    fclose(fp);
+    return;
+}
+
+/* 从文件中加载 */
+void LoadData(LISTS &Lists)
+{
+    FILE *fp = fopen(FileName, "r"); // 尝试打开文件
+    if (fp == NULL) // 如果文件不存在
+    { 
+        printf("File doesn't exist\n");
+        return;
+    }
+    char current_list_name[MAX_NAME_LENGTH];
+    int current_list_length;
+    ElemType current_elem;
+    Lists.length=0;
+    while(Lists.length<MAX_LIST_NUM&&fscanf(fp,"name:%s length:%d\n",current_list_name, &current_list_length)!=EOF)
+    {
+        // 打印log
+        printf("Reading a list with the name %s.\n", current_list_name);
+        
+        free(Lists.elem[Lists.length].L); // 释放原有空间
+        Lists.elem[Lists.length].L=NULL;
+        InitList(Lists.elem[Lists.length].L);   // 重新分配空间
+        strcpy(Lists.elem[Lists.length].name,current_list_name);
+        for(int i=0;i<current_list_length;i++)
+        {
+            fscanf(fp, "%d\n", &current_elem);
+            printf("element %d is being read.\n", current_elem);
+            ListInsert(Lists.elem[Lists.length].L,i+1,current_elem);
+        }
+        printf("\n");
+        fscanf(fp,"\n");
+        Lists.length++;
+    }
+    fclose(fp);
+    return;
 }
