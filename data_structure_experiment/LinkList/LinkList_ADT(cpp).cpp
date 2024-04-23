@@ -82,7 +82,7 @@ int main()
         system("cls"); // 清屏
         printMenu1(); 
         int save_flag=0; // 保存到文件时是否弹出提示的标志
-        int save_option; // 保存文件时用户是否确认
+        int save_option=0; // 保存文件时用户是否确认
         int load_option=1; // 从文件中加载时用户是否确认
         switch (op)
         {
@@ -146,13 +146,18 @@ int main()
                     break;
                 }
             }
-            if(save_flag) // 当前Lists是有未初始化的链表，弹出确认提示
+            if (save_flag) // 当前Lists是有未初始化的链表，弹出确认提示
             {
-            printf("The lists that are not initialized will not be saved.\n");
-            printf("confirm:1  cancel:0\n"); // 未初始化的文件不会被保存
-            scanf("%d", &save_option);
+                printf("The lists that are not initialized will not be saved.\n");
+                printf("confirm:1  cancel:0\n"); // 未初始化的文件不会被保存
+                scanf("%d", &save_option);
+                if (save_option) // 确认保存到文件
+                {
+                    SaveData(Lists);
+                    printf("Successfully Saved.\n"); // 保存成功
+                }
             }
-            if (save_option) // 确认保存到文件
+            else
             {
                 SaveData(Lists);
                 printf("Successfully Saved.\n"); // 保存成功
@@ -173,6 +178,15 @@ int main()
                 printf("Now you can enter 3 to query all lists in the file.\n"); // 输入3显示所有链表
             }
             break;
+        case 7: // 查找链表位置
+            char search_name[MAX_NAME_LENGTH];
+            printf("Please enter the name of the list you want to query:\n");
+            scanf("%s",search_name);
+            if(SelectList(Lists, search_name)!=-1)
+                printf("The location of the list is %d.\n",SelectList(Lists, search_name)+1);
+            else 
+                printf("There is no list named %s.\n", search_name);
+            break;   
         case 0: // 退出
             break;
         default:
@@ -426,6 +440,7 @@ void printMenu1()
     printf("|                 4. Select a single LinkList                 |\n");
     printf("|                 5.  Save All Data To File                   |\n");
     printf("|                 6. Load All Data From File                  |\n");
+    printf("|                 7.    Search a LinkList                     |\n");
     printf("|                 0.          EXIT                            |\n");
     printf("|=============================================================|\n\n");
 }
@@ -442,7 +457,7 @@ void printMenu2()
     printf("|      9.  Get Next Element       10. Insert Element          |\n");
     printf("|      11. Delete Element         12. Show All Elements       |\n");
     printf("|      13. Reverse Current List   14. Remove From End         |\n");
-    printf("|      15. Sort Current List      0.  EXIT                    |\n");
+    printf("|      15. Sort Current List      0. EXIT                     |\n");
     printf("|-------------------------------------------------------------|\n\n");
 }
 
@@ -709,11 +724,12 @@ status ListDelete(LinkList &L, int i, ElemType &e)
         return ERROR; 
     LinkList ll = L;
     while (--i)
-        ll = ll->next; // 找到删除位置
-    LinkList p = ll->next;
+        L = L->next; // 找到删除位置
+    LinkList p = L->next;
     e = p->data;
-    ll->next = ll->next->next;
+    L->next = L->next->next;
     free(p); // 释放该节点空间
+    L=ll;
     return OK;
 }
 
@@ -783,7 +799,7 @@ void SortList(LinkList &L)
     for(int i=1;i<len;i++) // 共进行len-1次，每次把最大数移到末尾
     {
         p=L->next; // 每一轮应该从第一个元素开始比较
-        for(int j=1;j<len-i;j++) // 每一轮只比较到第len-i-1和第len-i个元素
+        for(int j=0;j<len-i;j++) // 每一轮只比较到第len-i-1和第len-i个元素
         {
             int temp;
             if(p->data>p->next->data)
