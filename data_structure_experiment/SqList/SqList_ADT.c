@@ -69,6 +69,7 @@ status ChangeList(char ListName[], int *current);         // 切换当前线性�
 status RemoveList(LISTS *Lists, char ListName[], int *p); // 移除指定线性表
 status SaveData(LISTS Lists);                             // 将线性表数据保存到文件
 status LoadData(LISTS *LL);                               // 从文件加载线性表数据
+int search(LISTS Lists,char name[]);                      // 查找线性表位置
 
 /* 打印菜单 */
 void printMenu()
@@ -85,7 +86,7 @@ void printMenu()
     printf("|      15. Sub Array Num          16. Show All Lists          |\n");
     printf("|      17. Change Current List    18. Remove a List           |\n");
     printf("|      19. Save All Data          20. Load All Data           |\n");
-    printf("|                        0.  EXIT                             |\n");
+    printf("|      21. Search a List          0.  EXIT                    |\n");
     printf("|                                                             |\n");
     printf("|-------------------------------------------------------------|\n\n");
     // printf("|-------Please Choose Your Operation from Options above-------|\n");
@@ -421,6 +422,16 @@ int main()
                     printf("Now you can enter 16 to query all linear tables in the file.");
                 }
             }
+            getchar();
+            break;
+        case 21: // 查找线性表位置
+            printf("Please enter the name of the linear table you want to query:\n");
+            char search_name[MAX_NAME_LENGTH];
+            scanf("%s", search_name);
+            if(search(Lists,search_name)!=-1)
+                printf("The location of the linear table is %d.\n",search(Lists,search_name));
+            else 
+                printf("There is no linear table named %s.\n", search_name);
             getchar();
             break;
         case 0:
@@ -828,4 +839,15 @@ status LoadData(LISTS *LL)
         fscanf(fp, "\n");
     }
     return OK;
+}
+
+/* 查找线性表位置 */
+int search(LISTS Lists,char name[])
+{
+    for (int i = 0; i < Lists.length; i++)
+    {
+        if (strcmp(Lists.elem[i].name, name) == 0) // 存在
+        return i+1;
+    }
+    return -1; //不存在
 }
