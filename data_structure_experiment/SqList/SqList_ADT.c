@@ -703,6 +703,7 @@ ElemType MaxSubArray(SqList L)
 }
 
 /* 获取当前线性表中和为k的连续子数组个数 */
+/* -2 1 -3 4 -1 2 1 -5 4 */
 int SubArrayNum(SqList L, ElemType k)
 {
     int count = 0;
