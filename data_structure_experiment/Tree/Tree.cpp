@@ -7,10 +7,6 @@ typedef struct BiTNode{  //二叉链表结点的定义
       TElemType  data;
       struct BiTNode *lchild,*rchild;
 } BiTNode, *BiTree;
-// typedef struct {
-//     int pos;
-//     TElemType data;
-// } DEF;
 
 
 status CreateBiTree(BiTree &T,TElemType definition[])
