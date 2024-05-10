@@ -34,6 +34,7 @@ typedef struct
     {
         BiTree T;
         char name[MAX_NAME_LENGTH];
+        int len=0;
     } elem[MAX_TREE_NUM];
     int length; // 树的数量
 } TreeList;
@@ -61,6 +62,7 @@ status PostOrderTraverse(BiTree T, void (*visit)(BiTree));      // 后序遍历
 status LevelOrderTraverse(BiTree T, void (*visit)(BiTree));     // 层序遍历
 status SaveBiTree(TreeList TL);                                 // 保存树
 status LoadBiTree(TreeList &TL);                                // 读取树
+status InvertTree(BiTree &T);                                   // 翻转树
 
 /*主函数*/
 int main()
@@ -110,6 +112,7 @@ int main()
                     break;
                 scanf("%s", definition[i].others);
                 i++;
+                TL.elem[TL.length].len++;
             }
             definition[i].key = -1; // 结束标志
             int a = 0;
@@ -432,6 +435,15 @@ void main2(BiTree &T, int loc)
             }
             break;
         }
+        case 15:
+        {
+            if (!BiTreeEmpty(T))
+            {
+                InvertTree(T);
+                printf("The tree has been inverted successfully!\n");
+            }
+            break;
+        }
         case 0:
             system("cls");
             return;
@@ -469,6 +481,7 @@ void PrintMenu2()
     printf("|   9.  Insert a Node         10. Delete a Node         |\n");
     printf("|   11. PreOrderTraverse      12. InOrderTraverse       |\n");
     printf("|   13. PostOrderTraverse     14. LevelOrderTraverse    |\n");
+    printf("|   15. InvertTree            0.  EXIT                  |\n");
     printf("|=======================================================|\n\n");
 }
 
@@ -493,6 +506,7 @@ status BiTreeEmpty(BiTree T)
 /*创建树*/
 status CreateBiTree(BiTree &T, TElemType definition[], int &i)
 {
+    // 基于先序序列创建二叉树
     if (i == 0) // 第一次调用时检查是否有相同的关键字
     {
         for (int j = 0; definition[j].key != -1; j++)
@@ -820,7 +834,8 @@ status SaveBiTree(TreeList TL)
     for (int i = 0; i < TL.length; i++)
     {
         fprintf(fp, "----------\n");          // 分隔符
-        fprintf(fp, "%s\n", TL.elem[i].name); // 树的名字
+        fprintf(fp, "name:%s\n", TL.elem[i].name); // 树的名字
+        fprintf(fp, "length:%d\n", TL.elem[i].len); // 树的长度
         BiTree T = TL.elem[i].T;              // 树的根结点
         BiTree stack[100];                    // 栈
         int top = 0;
@@ -852,21 +867,34 @@ status LoadBiTree(TreeList &TL)
         return ERROR;
     char currrent_name[MAX_NAME_LENGTH]; // 当前树的名字
     TL.length = 0;                       // 初始化树的数量
-    while (TL.length < MAX_TREE_NUM && fscanf(fp, "----------\n%s\n", currrent_name) != EOF)
+    while (TL.length < MAX_TREE_NUM && fscanf(fp, "----------\nname:%s\n", currrent_name) != EOF)
     {
+        int len;
+        fscanf(fp, "length:%d\n", &len);   // 树的长度
         ClearBiTree(TL.elem[TL.length].T); // 清空原有树
         strcpy(TL.elem[TL.length].name, currrent_name);
-        int i = 0;
         TElemType definition[100];
-        while (fscanf(fp, "%d %s\n", &definition[i].key, definition[i].others) != EOF)
-        {
-            i++;
-        }
-        definition[i].key = -1;
+        for (int i = 0; i < len; i++)
+            fscanf(fp, "%d %s\n", &definition[i].key, definition[i].others);
+        definition[len].key = -1;
         int a = 0;
         CreateBiTree(TL.elem[TL.length].T, definition, a);
         fscanf(fp, "----------\n");
+        TL.elem[TL.length].len = len;
+        TL.length++;
     }
     fclose(fp);
     return OK;
+}
+
+status InvertTree(BiTree &T)
+{
+    if(T==NULL)
+        return OK;
+    BiTree temp=T->lchild;
+    T->lchild=T->rchild;
+    T->rchild=temp;
+    InvertTree(T->lchild);
+    InvertTree(T->rchild);
+    return OK; 
 }
