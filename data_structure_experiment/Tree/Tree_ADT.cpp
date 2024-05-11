@@ -39,6 +39,7 @@ typedef struct
 } TreeList;
 TreeList TL; // 全局变量，树的集合
 
+
 /*函数声明*/
 void PrintMenu1();                                              // 打印主菜单
 status CreateBiTree(BiTree &T, TElemType definition[], int &i); // 创建树
@@ -63,6 +64,9 @@ status SaveBiTree(TreeList TL);                                 // 保存树
 status LoadBiTree(TreeList &TL);                                // 读取树
 status InvertTree(BiTree &T);                                   // 翻转树
 int Save_Len(BiTree T);                                         // 保存树的长度
+int MaxPathSum(BiTree T);                                       // 求树的最大路径和
+BiTree LowestCommonAncestor(BiTree T,KeyType e1,KeyType e2);    // 求树的最近公共祖先
+
 
 /*主函数*/
 int main()
@@ -438,6 +442,14 @@ void main2(BiTree &T, int loc)
         {
             if (!BiTreeEmpty(T))
             {
+
+            }  
+            break;
+        }
+        case 17:
+        {
+            if (!BiTreeEmpty(T))
+            {
                 InvertTree(T);
                 printf("The tree has been inverted successfully!\n");
             }
@@ -480,7 +492,8 @@ void PrintMenu2()
     printf("|   9.  Insert a Node         10. Delete a Node         |\n");
     printf("|   11. PreOrderTraverse      12. InOrderTraverse       |\n");
     printf("|   13. PostOrderTraverse     14. LevelOrderTraverse    |\n");
-    printf("|   15. InvertTree            0.  EXIT                  |\n");
+    printf("|   15. MaxPathSum            16. LowestCommonAncestor  |\n");
+    printf("|   17. InvertTree            0.  EXIT                  |\n");
     printf("|=======================================================|\n\n");
 }
 
@@ -885,6 +898,7 @@ status LoadBiTree(TreeList &TL)
     return OK;
 }
 
+/*翻转树*/
 status InvertTree(BiTree &T)
 // 翻转树(不能使用中序)
 {
@@ -898,6 +912,7 @@ status InvertTree(BiTree &T)
     return OK; 
 }
 
+/*保存树的长度*/
 int Save_Len(BiTree T)
 {
     if(T==NULL)
@@ -905,3 +920,14 @@ int Save_Len(BiTree T)
     return Save_Len(T->lchild)+Save_Len(T->rchild)+1;
 }   
 
+/*求树的最大路径和*/
+int MaxPathSum(BiTree T)
+{
+
+}
+
+/*求树的最近公共祖先*/
+BiTree LowestCommonAncestor(BiTree T,KeyType e1,KeyType e2)
+{
+
+}
