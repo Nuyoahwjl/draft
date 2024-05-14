@@ -938,26 +938,22 @@ int Save_Len(BiTree T)
 /*求树的最大路径和*/
 int MaxPathSum(BiTree T)
 {
-    // 如果当前结点是叶子结点，则直接返回该结点的键值
-    if (T->lchild == NULL && T->rchild == NULL)
-        return T->data.key;
+    // 如果当前结点为空，返回0
+    if (T == NULL)
+        return 0;
 
-    // 如果左子树为空，则仅考虑右子树节点的路径和
-    else if (T->lchild == NULL && T->rchild != NULL)
-        return MaxPathSum(T->rchild) + T->data.key;
+    // // 如果当前结点是叶子结点，直接返回该结点的键值
+    // if (T->lchild == NULL && T->rchild == NULL)
+    //     return T->data.key;
 
-    // 如果右子树为空，则仅考虑左子树节点的路径和
-    else if (T->lchild != NULL && T->rchild == NULL)
-        return MaxPathSum(T->lchild) + T->data.key;
+    // 递归计算左右子树的最大路径和
+    int leftmax=0;
+    int rightmax=0;
+    leftmax = MaxPathSum(T->lchild);
+    rightmax = MaxPathSum(T->rchild);
 
-    // 如果左右子树都非空，则计算左右子树的最大路径和，并将当前节点的键值加上左右子树的最大路径和中的较大值
-    int leftmax = 0, rightmax = 0;
-    leftmax = MaxPathSum(T->lchild);  // 左子树的最大路径和
-    rightmax = MaxPathSum(T->rchild); // 右子树的最大路径和
-    if (leftmax > rightmax)
-        return leftmax + T->data.key;
-    else
-        return rightmax + T->data.key;
+    // 返回当前节点的键值加上左右子树的最大路径和中的较大值
+    return T->data.key + (leftmax > rightmax ? leftmax : rightmax);
 }
 
 /*求树的最近公共祖先*/
@@ -977,3 +973,4 @@ BiTree LowestCommonAncestor(BiTree T, KeyType e1, KeyType e2)
         return right;
     return NULL;
 }
+
