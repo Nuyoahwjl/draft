@@ -39,7 +39,6 @@ typedef struct
 } TreeList;
 TreeList TL; // 全局变量，树的集合
 
-
 /*函数声明*/
 void PrintMenu1();                                              // 打印主菜单
 status CreateBiTree(BiTree &T, TElemType definition[], int &i); // 创建树
@@ -65,8 +64,7 @@ status LoadBiTree(TreeList &TL);                                // 读取树
 status InvertTree(BiTree &T);                                   // 翻转树
 int Save_Len(BiTree T);                                         // 保存树的长度
 int MaxPathSum(BiTree T);                                       // 求树的最大路径和
-BiTree LowestCommonAncestor(BiTree T,KeyType e1,KeyType e2);    // 求树的最近公共祖先
-
+BiTree LowestCommonAncestor(BiTree T, KeyType e1, KeyType e2);  // 求树的最近公共祖先
 
 /*主函数*/
 int main()
@@ -442,8 +440,25 @@ void main2(BiTree &T, int loc)
         {
             if (!BiTreeEmpty(T))
             {
-
-            }  
+                printf("The MaxPathSum is %d.\n", MaxPathSum(T));
+            }
+            break;
+        }
+        case 16:
+        {
+            if (!BiTreeEmpty(T))
+            {
+                KeyType e1, e2;
+                printf("Please input the key of the first node:\n");
+                scanf("%d", &e1);
+                printf("Please input the key of the second node:\n");
+                scanf("%d", &e2);
+                BiTree p = LowestCommonAncestor(T, e1, e2);
+                if (p == NULL)
+                    printf("The nodes are not found.\n");
+                else
+                    printf("The LowestCommonAncestor is: %d,%s\n", p->data.key, p->data.others);
+            }
             break;
         }
         case 17:
@@ -506,7 +521,7 @@ void visit(BiTree T)
 /*判空*/
 status BiTreeEmpty(BiTree T)
 {
-    if (T == NULL) // 空树
+    if (T == NULL)
     {
         printf("The tree is empty.\n");
         return TRUE;
@@ -845,11 +860,11 @@ status SaveBiTree(TreeList TL)
     // 先序写入到文件
     for (int i = 0; i < TL.length; i++)
     {
-        fprintf(fp, "----------\n");          // 分隔符
-        fprintf(fp, "name:%s\n", TL.elem[i].name); // 树的名字
-        fprintf(fp, "length:%d\n",Save_Len(TL.elem[i].T)); // 树的长度
-        BiTree T = TL.elem[i].T;              // 树的根结点
-        BiTree stack[100];                    // 栈
+        fprintf(fp, "----------\n");                        // 分隔符
+        fprintf(fp, "name:%s\n", TL.elem[i].name);          // 树的名字
+        fprintf(fp, "length:%d\n", Save_Len(TL.elem[i].T)); // 树的长度
+        BiTree T = TL.elem[i].T;                            // 树的根结点
+        BiTree stack[100];                                  // 栈
         int top = 0;
         stack[top++] = T;
         while (top)
@@ -902,32 +917,63 @@ status LoadBiTree(TreeList &TL)
 status InvertTree(BiTree &T)
 // 翻转树(不能使用中序)
 {
-    if(T==NULL)
+    if (T == NULL)
         return OK;
-    BiTree temp=T->lchild;
-    T->lchild=T->rchild;
-    T->rchild=temp;
+    BiTree temp = T->lchild;
+    T->lchild = T->rchild;
+    T->rchild = temp;
     InvertTree(T->lchild);
     InvertTree(T->rchild);
-    return OK; 
+    return OK;
 }
 
 /*保存树的长度*/
 int Save_Len(BiTree T)
 {
-    if(T==NULL)
+    if (T == NULL)
         return 1;
-    return Save_Len(T->lchild)+Save_Len(T->rchild)+1;
-}   
+    return Save_Len(T->lchild) + Save_Len(T->rchild) + 1;
+}
 
 /*求树的最大路径和*/
 int MaxPathSum(BiTree T)
 {
+    // 如果当前结点是叶子结点，则直接返回该结点的键值
+    if (T->lchild == NULL && T->rchild == NULL)
+        return T->data.key;
 
+    // 如果左子树为空，则仅考虑右子树节点的路径和
+    else if (T->lchild == NULL && T->rchild != NULL)
+        return MaxPathSum(T->rchild) + T->data.key;
+
+    // 如果右子树为空，则仅考虑左子树节点的路径和
+    else if (T->lchild != NULL && T->rchild == NULL)
+        return MaxPathSum(T->lchild) + T->data.key;
+
+    // 如果左右子树都非空，则计算左右子树的最大路径和，并将当前节点的键值加上左右子树的最大路径和中的较大值
+    int leftmax = 0, rightmax = 0;
+    leftmax = MaxPathSum(T->lchild);  // 左子树的最大路径和
+    rightmax = MaxPathSum(T->rchild); // 右子树的最大路径和
+    if (leftmax > rightmax)
+        return leftmax + T->data.key;
+    else
+        return rightmax + T->data.key;
 }
 
 /*求树的最近公共祖先*/
-BiTree LowestCommonAncestor(BiTree T,KeyType e1,KeyType e2)
+BiTree LowestCommonAncestor(BiTree T, KeyType e1, KeyType e2)
 {
-
+    if (T == NULL) // 空树
+        return NULL;
+    if (T->data.key == e1 || T->data.key == e2) // 找到结点
+        return T;
+    BiTree left = LowestCommonAncestor(T->lchild, e1, e2);  // 递归左子树
+    BiTree right = LowestCommonAncestor(T->rchild, e1, e2); // 递归右子树
+    if (left != NULL && right != NULL)                      // 左右子树都找到
+        return T;
+    else if (left != NULL) // 左子树找到
+        return left;
+    else if (right != NULL) // 右子树找到
+        return right;
+    return NULL;
 }

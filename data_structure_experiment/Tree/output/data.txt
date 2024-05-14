@@ -1,20 +1,15 @@
 ----------
 name:name1
-length:5
-1 5
-2 6
+length:11
+1 a
+0 null
+3 c
+6 f
+0 null
+4 d
 0 null
 0 null
-0 null
-----------
-----------
-name:name2
-length:7
-1 5
-2 6
-3 8
-0 null
-0 null
+11 x
 0 null
 0 null
 ----------
