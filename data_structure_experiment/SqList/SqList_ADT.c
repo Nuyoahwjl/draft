@@ -19,7 +19,7 @@
 
 /* 定义数据类型 */
 typedef int status;
-typedef int ElemType;       // 数据元素类型定义
+typedef int ElemType; // 数据元素类型定义
 
 /* 线性表（顺序结构）的定义 */
 typedef struct
@@ -50,7 +50,7 @@ void clearAllList(LISTS Lists);                           // Lists初始化
 status checkList(SqList *L);                              // 检查线性表合法性
 void visit(ElemType item);                                // 用于遍历时输出
 status InitList(SqList *L);                               // 初始化线性表
-status DestroyList(LISTS *Lists,int current);             // 销毁线性表
+status DestroyList(LISTS *Lists, int current);            // 销毁线性表
 status ClearList(SqList *L);                              // 清空线性表
 status ListEmpty(SqList L);                               // 判断线性表是否为空
 int ListLength(SqList L);                                 // 获取线性表长度
@@ -69,7 +69,7 @@ status ChangeList(char ListName[], int *current);         // 切换当前线性�
 status RemoveList(LISTS *Lists, char ListName[], int *p); // 移除指定线性表
 status SaveData(LISTS Lists);                             // 将线性表数据保存到文件
 status LoadData(LISTS *LL);                               // 从文件加载线性表数据
-int search(LISTS Lists,char name[]);                      // 查找线性表位置
+int search(LISTS Lists, char name[]);                     // 查找线性表位置
 
 /* 打印菜单 */
 void printMenu()
@@ -201,9 +201,9 @@ int main()
         case 2: // 销毁当前线性表
             if (checkList(L))
             {
-                if (DestroyList(&Lists,current) == OK) // 销毁成功
-                {    
-                    L=NULL;
+                if (DestroyList(&Lists, current) == OK) // 销毁成功
+                {
+                    L = NULL;
                     printf("The linear table was successfully destroyed.\n");
                 }
             }
@@ -374,11 +374,11 @@ int main()
             printf("Please enter the name you want to change to:\n");
             char temp_change[MAX_NAME_LENGTH]; // 要切换的表的名称
             scanf("%s", temp_change);
-            if (ChangeList(temp_change, &current)==OK) // 切换成功
-                {
-                    L=Lists.elem[current].L; // L指向切换后线性表
-                    printf("Successfully changed.\n");
-                }
+            if (ChangeList(temp_change, &current) == OK) // 切换成功
+            {
+                L = Lists.elem[current].L; // L指向切换后线性表
+                printf("Successfully changed.\n");
+            }
             else // 表不存在
                 printf("There is no linear table named %s.\n", temp_change);
             getchar();
@@ -428,9 +428,9 @@ int main()
             printf("Please enter the name of the linear table you want to query:\n");
             char search_name[MAX_NAME_LENGTH];
             scanf("%s", search_name);
-            if(search(Lists,search_name)!=-1)
-                printf("The location of the linear table is %d.\n",search(Lists,search_name));
-            else 
+            if (search(Lists, search_name) != -1)
+                printf("The location of the linear table is %d.\n", search(Lists, search_name));
+            else
                 printf("There is no linear table named %s.\n", search_name);
             getchar();
             break;
@@ -452,8 +452,8 @@ status InitList(SqList *L)
     if (L->elem == NULL) // 未分配空间
     {
         L->elem = (int *)malloc(sizeof(int) * LIST_INIT_SIZE); // 分配空间
-        L->listsize = LIST_INIT_SIZE; // 初始容量
-        L->length = 0; // 初始长度为0
+        L->listsize = LIST_INIT_SIZE;                          // 初始容量
+        L->length = 0;                                         // 初始长度为0
         return OK;
     }
     else // 已初始化
@@ -461,7 +461,7 @@ status InitList(SqList *L)
 }
 
 /* 销毁线性表 */
-status DestroyList(LISTS *Lists,int current)
+status DestroyList(LISTS *Lists, int current)
 {
     free(Lists->elem[current].L); // 销毁空间
     for (int i = current; i < Lists->length; i++)
@@ -494,7 +494,7 @@ status ListEmpty(SqList L)
         if (L.length == 0)
             return TRUE; // 空
         else
-            return FALSE; //非空
+            return FALSE; // 非空
     }
 }
 
@@ -513,10 +513,10 @@ status GetElem(SqList L, int i, ElemType *e)
     if (L.elem == NULL) // 未初始化
         return INFEASIBLE;
     else if (i <= 0 || i > L.length)
-        return ERROR; //长度不合法
+        return ERROR; // 长度不合法
     else
     {
-        *e = L.elem[i - 1]; //参数回传
+        *e = L.elem[i - 1]; // 参数回传
         return OK;
     }
 }
@@ -532,7 +532,7 @@ int LocateElem(SqList L, ElemType e)
         for (i; i < L.length; i++)
         {
             if (L.elem[i] == e) // e存在
-                return i + 1; // 返回位置
+                return i + 1;   // 返回位置
         }
         if (i >= L.length) // e不存在
             return ERROR;
@@ -581,7 +581,7 @@ status NextElem(SqList L, ElemType e, ElemType *next)
                     return ERROR;
                 else
                 {
-                    *next = L.elem[i + 1]; //参数回传
+                    *next = L.elem[i + 1]; // 参数回传
                     return OK;
                 }
             }
@@ -615,7 +615,7 @@ status ListInsert(SqList *L, int i, ElemType e)
     for (int j = L->length - 1; j >= i - 1; j--) // 后移
         L->elem[j + 1] = L->elem[j];
     L->elem[i - 1] = e; // 插入
-    L->length++; // 长度加一
+    L->length++;        // 长度加一
     return OK;
 }
 
@@ -629,7 +629,7 @@ status ListDelete(SqList *L, int i, ElemType *e)
     *e = L->elem[i - 1]; // 参数回传
     for (int j = i - 1; j < L->length - 1; j++)
         L->elem[j] = L->elem[j + 1]; // 前移
-    L->length--; // 长度减一
+    L->length--;                     // 长度减一
     return OK;
 }
 
@@ -639,7 +639,7 @@ status ListTraverse(SqList L, void (*visit)(ElemType))
     if (L.elem == NULL) // 未初始化
         return INFEASIBLE;
     if (L.length)
-    { 
+    {
         int literate_time = 0; // 未初始化
         for (; literate_time < L.length; literate_time++)
         { // 对每一个元素执行visit函数，此处visit函数的作用是打印元素
@@ -688,7 +688,7 @@ ElemType MaxSubArray(SqList L)
     if (L.length) // 存在元素
     {
         // 初始化最大和和当前子数组的和为数组的第一个元素
-        int max_sum = L.elem[0]; 
+        int max_sum = L.elem[0];
         int current_sum = L.elem[0];
         // 从数组的第二个元素开始遍历
         for (int i = 1; i < L.length; i++)
@@ -751,7 +751,7 @@ status ChangeList(char ListName[], int *current)
             return OK;
         }
     }
-    return ERROR; //不存在
+    return ERROR; // 不存在
 }
 
 /* 移除指定线性表 */
@@ -762,7 +762,7 @@ status RemoveList(LISTS *Lists, char ListName[], int *p)
         if (strcmp(Lists->elem[i].name, ListName) == 0) // 存在
         {
             free(Lists->elem[i].L); // 释放空间
-            *p = i; // 回传删除的位置
+            *p = i;                 // 回传删除的位置
             for (int j = i; j < Lists->length; j++)
             {
                 Lists->elem[i] = Lists->elem[i + 1]; // 前移
@@ -780,13 +780,13 @@ status SaveData(LISTS Lists)
     // printf("Please enter the filename:\n");
     // scanf("%s",FileName);
     FILE *fp = fopen(FileName, "w"); // 覆盖写入
-    if (fp == NULL) // 尝试打开，如果文件不存在，则创建文件
+    if (fp == NULL)                  // 尝试打开，如果文件不存在，则创建文件
         fp = fopen(FileName, "wb");
     int literate_time = 0;
     for (; literate_time < Lists.length; literate_time++)
     {
-        if (Lists.elem[literate_time].L) 
-        {                                
+        if (Lists.elem[literate_time].L)
+        {
             // 按照一定格式将数据保存到文件中
             fprintf(fp, "name:%s length:%d\n", Lists.elem[literate_time].name, Lists.elem[literate_time].L->length);
             for (int i = 0; i < Lists.elem[literate_time].L->length; i++)
@@ -802,27 +802,27 @@ status SaveData(LISTS Lists)
 status LoadData(LISTS *LL)
 // 还有一种读取方法为仅显示，但当前Lists并不会更新为文件中内容。
 // Lists只是暂存的，如果没有Save就去Load，当前暂存的Lists会被文件内容覆盖。
-{ 
+{
     // printf("Please enter the filename:\n");
     // scanf("%s",FileName);
     FILE *fp = fopen(FileName, "r"); // 尝试打开文件
-    if (fp == NULL) // 如果文件不存在
-    { 
+    if (fp == NULL)                  // 如果文件不存在
+    {
         printf("File doesn't exist\n");
         return ERROR;
     }
-    int literate_time = 0; // 当前位置
+    int literate_time = 0;                   // 当前位置
     char current_list_name[MAX_NAME_LENGTH]; // 当前读取的线性表的名字
-    ElemType current_elem; // 当前读取的元素
-    int list_length; // 当前线性表长度
-    LL->length = 0; // 初始数量为零
+    ElemType current_elem;                   // 当前读取的元素
+    int list_length;                         // 当前线性表长度
+    LL->length = 0;                          // 初始数量为零
     // 不断读取直到文件尾，即EOF
     while (literate_time < MAX_LIST_NUM && fscanf(fp, "name:%s length:%d\n", current_list_name, &list_length) != EOF)
-    {   
+    {
         // 打印log
         printf("Reading a linear table with the name %s.\n", current_list_name);
 
-        free(LL->elem[literate_time].L); // 释放原有空间
+        free(LL->elem[literate_time].L);                              // 释放原有空间
         LL->elem[literate_time].L = (SqList *)malloc(sizeof(SqList)); // 重新分配空间
         strcpy(LL->elem[literate_time].name, current_list_name);
         LL->elem[literate_time].L->length = list_length;
@@ -836,19 +836,20 @@ status LoadData(LISTS *LL)
         }
         printf("\n");
         literate_time++; // 位置后移
-        LL->length++; // 数量加一
+        LL->length++;    // 数量加一
         fscanf(fp, "\n");
     }
     return OK;
 }
 
 /* 查找线性表位置 */
-int search(LISTS Lists,char name[])
+int search(LISTS Lists, char name[])
 {
     for (int i = 0; i < Lists.length; i++)
     {
         if (strcmp(Lists.elem[i].name, name) == 0) // 存在
-        return i+1;
+            return i + 1;
     }
-    return -1; //不存在
+    return -1; // 不存在
 }
+

@@ -129,9 +129,9 @@ int main()
         case 2: // 删除树
         {
             printf("Please input the name of the tree you want to delete:\n");
-            char delete_name[MAX_NAME_LENGTH];
+            char delete_name[MAX_NAME_LENGTH]; // 删除树的名字
             scanf("%s", delete_name);
-            if (SelectTree(TL, delete_name) == -1) //
+            if (SelectTree(TL, delete_name) == -1) // 未找到树
             {
                 printf("ERROR:There is no such tree!\n");
                 break;
@@ -202,7 +202,7 @@ int main()
             char search_name[MAX_NAME_LENGTH];
             printf("Please enter the name of the tree you want to query:\n");
             scanf("%s", search_name);
-            if (SelectTree(TL, search_name) != -1) //
+            if (SelectTree(TL, search_name) != -1) // 找到树
                 printf("The location of the tree is %d.\n", SelectTree(TL, search_name) + 1);
             else
                 printf("There is no tree named %s.\n", search_name);
@@ -253,7 +253,7 @@ void main2(BiTree &T, int loc)
                 }
                 definition[i].key = -1; // 结束标志
                 int a = 0;
-                if (CreateBiTree(T, definition, a) == ERROR)
+                if (CreateBiTree(T, definition, a) == ERROR) // 创建树
                 {
                     printf("ERROR:There are same keys in the tree!\n");
                     break;
@@ -290,7 +290,7 @@ void main2(BiTree &T, int loc)
             }
             TL.length--;
             // 树的数量减1
-            system("cls");
+            system("cls"); // 清屏
             printf("\nThe tree has been destoryed successfully!\n\n");
             return;
             break;
@@ -328,14 +328,14 @@ void main2(BiTree &T, int loc)
         {
             if (!BiTreeEmpty(T)) // 树不为空
             {
-                KeyType e;
-                TElemType value;
+                KeyType e;       // 关键字
+                TElemType value; // 其他信息
                 printf("Please input the key you want to assign:\n");
                 scanf("%d", &e);
                 printf("Please input the value you want to assign:\n");
                 scanf("%d %s", &value.key, value.others);
-                int s = Assign(T, e, value);
-                if (s == ERROR) // 有相同的关键字
+                int s = Assign(T, e, value); // 赋值
+                if (s == ERROR)              // 有相同的关键字
                     printf("ERROR:There is a same key in the tree!\n");
                 else if (s == INFEASIBLE) // 未找到结点
                     printf("The node is not found.\n");
@@ -436,7 +436,7 @@ void main2(BiTree &T, int loc)
             }
             break;
         }
-        case 15:
+        case 15: // 求树的最大路径和
         {
             if (!BiTreeEmpty(T))
             {
@@ -444,7 +444,7 @@ void main2(BiTree &T, int loc)
             }
             break;
         }
-        case 16:
+        case 16: // 求树的最近公共祖先
         {
             if (!BiTreeEmpty(T))
             {
@@ -461,7 +461,7 @@ void main2(BiTree &T, int loc)
             }
             break;
         }
-        case 17:
+        case 17: // 翻转树
         {
             if (!BiTreeEmpty(T))
             {
@@ -521,7 +521,7 @@ void visit(BiTree T)
 /*判空*/
 status BiTreeEmpty(BiTree T)
 {
-    if (T == NULL)
+    if (T == NULL) // 空树
     {
         printf("The tree is empty.\n");
         return TRUE;
@@ -552,7 +552,7 @@ status CreateBiTree(BiTree &T, TElemType definition[], int &i)
     if (definition[i].key == 0) // 0表示空树
     {
         T = NULL;
-        i++;
+        i++; // definition后移
         return OK;
     }
     else // 非空树
@@ -594,9 +594,9 @@ int BiTreeDepth(BiTree T)
 {
     if (T == NULL) // 空树
         return 0;
-    int ldepth = BiTreeDepth(T->lchild);
-    int rdepth = BiTreeDepth(T->rchild);
-    return (ldepth > rdepth ? ldepth : rdepth) + 1; // 返回树的深度
+    int ldepth = BiTreeDepth(T->lchild);            // 左子树的深度
+    int rdepth = BiTreeDepth(T->rchild);            // 右子树的深度
+    return (ldepth > rdepth ? ldepth : rdepth) + 1; // max(ldepth,rdepth)+1
 }
 
 /*定位结点*/
@@ -606,10 +606,10 @@ BiTree LocateNode(BiTree T, KeyType e)
         return NULL;
     if (T->data.key == e) // 找到结点
         return T;
-    BiTree p = LocateNode(T->lchild, e);
+    BiTree p = LocateNode(T->lchild, e); // 在左子树中查找
     if (p != NULL)
         return p;
-    p = LocateNode(T->rchild, e);
+    p = LocateNode(T->rchild, e); // 在右子树中查找
     return p;
 }
 
@@ -634,10 +634,10 @@ BiTree GetSibling(BiTree T, KeyType e)
         return T->rchild;
     if (T->rchild != NULL && T->rchild->data.key == e) // 找到右孩子
         return T->lchild;
-    BiTree p = GetSibling(T->lchild, e);
+    BiTree p = GetSibling(T->lchild, e); // 在左子树中查找
     if (p != NULL)
         return p;
-    p = GetSibling(T->rchild, e);
+    p = GetSibling(T->rchild, e); // 在右子树中查找
     return p;
 }
 
@@ -776,10 +776,10 @@ BiTree GetParent(BiTree T, KeyType e)
         return T;
     if (T->rchild != NULL && T->rchild->data.key == e) // 找到右孩子
         return T;
-    BiTree p = GetParent(T->lchild, e);
+    BiTree p = GetParent(T->lchild, e); // 在左子树中查找
     if (p != NULL)
         return p;
-    p = GetParent(T->rchild, e);
+    p = GetParent(T->rchild, e); // 在右子树中查找
     return p;
 }
 
@@ -800,21 +800,21 @@ status InOrderTraverse(BiTree T, void (*visit)(BiTree))
 {
     BiTree stack[100];
     int top = 0;
-    stack[top++] = T;
-    while (top)
+    stack[top++] = T; // 根结点入栈
+    while (top)       // 栈不空
     {
-        T = stack[top - 1];
-        while (T)
+        T = stack[top - 1]; // 得到栈顶元素
+        while (T)           // 向左下走到尽头
         {
             T = T->lchild;
             stack[top++] = T;
         }
-        top--;
+        top--; // 弹出NULL指针
         if (top)
         {
-            T = stack[--top];
+            T = stack[--top]; // 弹出栈顶元素
             visit(T);
-            stack[top++] = T->rchild;
+            stack[top++] = T->rchild; // 右子树入栈
         }
     }
     return OK;
@@ -837,14 +837,14 @@ status LevelOrderTraverse(BiTree T, void (*visit)(BiTree))
 {
     BiTree queue[100];
     int front = 0, rear = 0;
-    queue[rear++] = T;
-    while (front != rear)
+    queue[rear++] = T;    // 根结点入队
+    while (front != rear) // 队列不空
     {
         T = queue[front++];
         visit(T);
-        if (T->lchild != NULL)
+        if (T->lchild != NULL) // 左孩子入队
             queue[rear++] = T->lchild;
-        if (T->rchild != NULL)
+        if (T->rchild != NULL) // 右孩子入队
             queue[rear++] = T->rchild;
     }
     return OK;
@@ -901,7 +901,7 @@ status LoadBiTree(TreeList &TL)
         ClearBiTree(TL.elem[TL.length].T); // 清空原有树
         strcpy(TL.elem[TL.length].name, currrent_name);
         TElemType definition[100];
-        for (int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++) // 读入树的结点
             fscanf(fp, "%d %s\n", &definition[i].key, definition[i].others);
         definition[len].key = -1;
         int a = 0;
@@ -915,13 +915,15 @@ status LoadBiTree(TreeList &TL)
 
 /*翻转树*/
 status InvertTree(BiTree &T)
-// 翻转树(不能使用中序)
+//(不能使用中序 会出错)
 {
     if (T == NULL)
         return OK;
+    // 交换左右子树
     BiTree temp = T->lchild;
     T->lchild = T->rchild;
     T->rchild = temp;
+    // 递归翻转左右子树
     InvertTree(T->lchild);
     InvertTree(T->rchild);
     return OK;
@@ -931,7 +933,7 @@ status InvertTree(BiTree &T)
 int Save_Len(BiTree T)
 {
     if (T == NULL)
-        return 1;
+        return 1; // 空节点也要保存
     return Save_Len(T->lchild) + Save_Len(T->rchild) + 1;
 }
 
@@ -947,8 +949,8 @@ int MaxPathSum(BiTree T)
     //     return T->data.key;
 
     // 递归计算左右子树的最大路径和
-    int leftmax=0;
-    int rightmax=0;
+    int leftmax = 0;
+    int rightmax = 0;
     leftmax = MaxPathSum(T->lchild);
     rightmax = MaxPathSum(T->rchild);
 
@@ -973,4 +975,3 @@ BiTree LowestCommonAncestor(BiTree T, KeyType e1, KeyType e2)
         return right;
     return NULL;
 }
-
