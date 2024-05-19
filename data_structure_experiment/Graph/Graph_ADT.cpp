@@ -1024,3 +1024,4 @@ int ConnectedComponentsNums(ALGraph G)
     }
     return num;
 }
+
