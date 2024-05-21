@@ -456,7 +456,7 @@ void printMenu2()
     printf("|      9.  Get Next Element       10. Insert Element          |\n");
     printf("|      11. Delete Element         12. Show All Elements       |\n");
     printf("|      13. Reverse Current List   14. Remove From End         |\n");
-    printf("|      15. Sort Current List      0. EXIT                     |\n");
+    printf("|      15. Sort Current List      0.  EXIT                    |\n");
     printf("|-------------------------------------------------------------|\n\n");
 }
 
