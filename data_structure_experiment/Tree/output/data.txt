@@ -1,0 +1,15 @@
+----------
+name:name1
+length:11
+1 a
+2 b
+0 null
+0 null
+3 c
+4 d
+0 null
+0 null
+5 e
+0 null
+0 null
+----------
