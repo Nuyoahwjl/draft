@@ -263,7 +263,7 @@ void main2(ALGraph &G)
             if (loc == -1) // 顶点不存在
                 printf("The vertex does not exist.\n");
             else // 输出顶点位置
-                printf("The location of the vertex is %d.\n", loc);
+                visit(G.vertices[loc].data);
             break;
         }
         case 3: // 修改顶点
@@ -288,10 +288,10 @@ void main2(ALGraph &G)
             int loc = FirstAdjVex(G, u);
             if (loc == -1) // 顶点不存在或没有邻接顶点
                 printf("The vertex does not exist or has no adjacent vertex.\n");
-            else // 输出第一个邻接顶点的位置和关键字
+            else // 输出第一个邻接顶点信息
             {
-                printf("The location of the first adjvex is %d.\n", loc);
-                printf("The key of the first adjvex is %d.\n", G.vertices[loc].data.key);
+                printf("The location of the next adjvex is %d.\n", loc);
+                printf("The key of the next adjvex is %d.\n", G.vertices[loc].data.key);
             }
             break;
         }

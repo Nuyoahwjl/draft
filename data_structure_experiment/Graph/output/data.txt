@@ -1,12 +1,11 @@
 --------------------
 name:name1
-vexnum:5
+vexnum:4
 arcnum:4
-5 xx
-8 jj
-7 ee
-6 ww
-9 hh
+5 线性表
+8 集合
+7 二叉树
+6 无向图
 5 7
 5 6
 8 7
