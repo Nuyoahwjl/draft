@@ -994,7 +994,7 @@ int ShortestPathLength(ALGraph G, KeyType v, KeyType w)
 /*连通分量数*/
 int ConnectedComponentsNums(ALGraph G)
 {
-    int num = 0; // 连通分量数
+        int num = 0; // 连通分量数
     bool visited[G.vexnum];
     for (int v = 0; v < G.vexnum; v++)
         visited[v] = false;
