@@ -1,6 +1,7 @@
 /*在数组nums[n]中，数字都是1到n-1范围内的，
 其中有且只有一个重复数字，找到它，时间复杂度 O(n), 空间复杂度 O(1)*/
 
+
 #include <stdio.h>
 #include <stdlib.h>
 int findDuplicate(int* nums, int numsSize) {
