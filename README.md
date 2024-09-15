@@ -13,6 +13,6 @@
 - [演示系统(cpp)](./data_structure_experiment/Graph/Graph_ADT.cpp) （`Graph`）
 
 
-<div align="center">
+<div align="left">
   <img alt="GIF" src="https://media.giphy.com/media/836HiJc7pgzy8iNXCn/giphy.gif" />
 </div>
