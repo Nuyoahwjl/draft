@@ -1,8 +1,6 @@
-name: Update typing Daily
+name: Update typing
 
 on:
-  schedule:
-    - cron: '0 12 * * *'  # 每天 UTC 时间 12:00 (北京时间 20:00) 运行
   workflow_dispatch:       # 允许手动触发
 
 jobs:
