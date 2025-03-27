@@ -1,0 +1,28 @@
+name: Update typing Daily
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # 每天 UTC 时间 12:00 (北京时间 20:00) 运行
+  workflow_dispatch:       # 允许手动触发
+
+jobs:
+  update-STAR-HISTORY:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download STAR-HISTORY SVG
+      run: |
+        curl -s -o typing.svg "https://readme-typing-svg.demolab.com?font=Fira+Code&weight=520&pause=1000&color=FF4B4BFF&center=true&vCenter=true&width=800&lines=Hi+there+👋,+Welcome+to+HCR!;Fill+in+the+following+information+to+get+the+recommendation"
+
+    - name: Commit changes
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add typing.svg
+        git diff --quiet && git diff --staged --quiet || git commit -m "Update typing.svg"
+        git push https://x-access-token:${GITHUB_TOKEN}@github.com/Nuyoahwjl/HUST-CS.git HEAD:main
