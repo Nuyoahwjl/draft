@@ -33,3 +33,9 @@ hexo new post name
 ``` bash
 hexo g -d
 ```
+
+<div align="center">
+
+![spotify-github-profile](https://spotify-github-profile.kittinanx.com/api/view?uid=316ilvbq2a4sp4oam7kias22j76q&cover_image=true&theme=natemoo-re&show_offline=true&background_color=121212&interchange=false&bar_color=53b14f&bar_color_cover=false)
+
+</div>
